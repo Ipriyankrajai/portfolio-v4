@@ -1,0 +1,54 @@
+import Link from "next/link";
+
+import { siteConfig } from "@/config";
+import { cn } from "@/lib/utils";
+import BlurFade from "./ui/blur-fade";
+import { buttonVariants } from "./ui/button";
+import { Spotlight } from "./ui/spotlight";
+
+const BLUR_FADE_DELAY = 0.04;
+
+export function Hero() {
+  return (
+    <section id="about" className="relative overflow-hidden">
+      <Spotlight className="md:-top-20 md:left-20 lg:-top-0 lg:left-[50] xl:-top-20 xl:left-60" />
+
+      <div className="mx-auto max-w-screen-lg overflow-x-hidden px-6 sm:px-16">
+        <div className="flex h-svh w-full flex-col justify-center">
+          <BlurFade delay={BLUR_FADE_DELAY * 3}>
+            <h1 className="text-center text-xl font-bold text-neutral-200 sm:text-left lg:text-2xl">
+              Hello, I&apos;m Priyank Rajai.
+            </h1>
+          </BlurFade>
+          <BlurFade delay={BLUR_FADE_DELAY * 4} className="mb-8 mt-4">
+            <h2 className="bg-gradient-to-b from-neutral-50 to-neutral-400 bg-clip-text text-center text-4xl font-bold text-transparent sm:text-left md:text-6xl lg:text-7xl">
+              I craft stunning, user-friendly interfaces for the modern web.
+            </h2>
+          </BlurFade>
+          <BlurFade delay={BLUR_FADE_DELAY * 5}>
+            <p className="text-center text-base font-medium text-neutral-200 sm:text-left">
+              I&apos;m a passionate Full Stack Developer from India with
+              expertise in building web applications using React.js, Next.js,
+              Node.js, PostgreSQL, MongoDB, Langchain, OpenAI, LLMs, and
+              Web3.js.
+            </p>
+          </BlurFade>
+
+          <BlurFade
+            delay={BLUR_FADE_DELAY * 6}
+            className="self-center sm:self-start"
+          >
+            <Link
+              href={`${siteConfig.url}/resume.pdf`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(buttonVariants(), "mt-8 rounded-full")}
+            >
+              Resume
+            </Link>
+          </BlurFade>
+        </div>
+      </div>
+    </section>
+  );
+}

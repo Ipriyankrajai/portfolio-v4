@@ -17,20 +17,20 @@ export function Hero() {
         <div className="flex h-svh w-full flex-col justify-center">
           <BlurFade delay={BLUR_FADE_DELAY * 3}>
             <h1 className="text-center text-xl font-bold text-neutral-200 sm:text-left lg:text-2xl">
-              Hello, I&apos;m Priyank Rajai.
+              Hi, I&apos;m Priyank Rajai.
             </h1>
           </BlurFade>
           <BlurFade delay={BLUR_FADE_DELAY * 4} className="mb-8 mt-4">
             <h2 className="bg-gradient-to-b from-neutral-50 to-neutral-400 bg-clip-text text-center text-4xl font-bold text-transparent sm:text-left md:text-6xl lg:text-7xl">
-              I craft stunning, user-friendly interfaces for the modern web.
+              Crafting Beautiful, User-Centric Experiences for the Modern Web
             </h2>
           </BlurFade>
           <BlurFade delay={BLUR_FADE_DELAY * 5}>
             <p className="text-center text-base font-medium text-neutral-200 sm:text-left">
-              I&apos;m a passionate Full Stack Developer from India with
-              expertise in building web applications using React.js, Next.js,
-              Node.js, PostgreSQL, MongoDB, Langchain, OpenAI, LLMs, and
-              Web3.js.
+              I&apos;m a passionate Full Stack Developer from India,
+              specializing in crafting high-performance web applications using
+              modern JavaScript frameworks and scalable backend technologies. I
+              also build AI-powered workflows and autonomous agents.
             </p>
           </BlurFade>
 

@@ -1,3 +1,8 @@
+import { GitHubIcon } from "@/components/icons/github-icon";
+import { LinkedinIcon } from "@/components/icons/linkedin-icon";
+import { XLogoIcon } from "@/components/icons/x-logo-icon";
+
+
 export const siteConfig = {
   title: "Priyank Rajai | Full-Stack Developer | Open Source Steward",
   description:
@@ -7,3 +12,17 @@ export const siteConfig = {
       ? "https://priyankrajai.com"
       : "http://localhost:3000",
 };
+
+export const SOCIAL_LINKS = [
+  {
+    name: "GitHub",
+    link: "https://github.com/Ipriyankrajai",
+    icon: GitHubIcon,
+  },
+  {
+    name: "Linkedin",
+    link: "https://www.linkedin.com/in/priyank-rajai/",
+    icon: LinkedinIcon,
+  },
+  { name: "X", link: "https://x.com/Ipriyankrajai", icon: XLogoIcon },
+];

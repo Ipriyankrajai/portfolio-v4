@@ -2,7 +2,6 @@ import { GitHubIcon } from "@/components/icons/github-icon";
 import { LinkedinIcon } from "@/components/icons/linkedin-icon";
 import { XLogoIcon } from "@/components/icons/x-logo-icon";
 
-
 export const siteConfig = {
   title: "Priyank Rajai | Full-Stack Developer | Open Source Steward",
   description:
@@ -67,5 +66,37 @@ export const EXPERIENCES = [
     designation: "Software Engineer",
     startDate: "Aug 2020",
     endDate: "Aug 2021",
+  },
+];
+
+export const PROJECTS = [
+  {
+    id: 1,
+    name: "Magic Table",
+    description:
+      "A data table application built with Tanstack Table and nuqs, featuring filtering functionalities for efficient data management and state handling.",
+    github_url: "https://github.com/Ipriyankrajai/magic-table",
+    stargazers_count: 1,
+    forks_count: 0,
+    tags: [
+      "Next.js",
+      "TailwindCSS",
+      "Tanstack Table",
+      "shadcn/ui",
+      "nuqs",
+      "cmdk",
+    ],
+    demo_url: "https://magic-table.priyankrajai.com",
+  },
+  {
+    id: 2,
+    name: "Portfolio Website",
+    description:
+      "A modern, responsive personal portfolio showcasing my projects and skills, built with Next.js, TailwindCSS, and shadcn/ui. Features smooth animations powered by Framer Motion, optimized performance, and a clean, minimalist design for an exceptional user experience.",
+    github_url: "https://github.com/Ipriyankrajai/portfolio-v4",
+    stargazers_count: 0,
+    forks_count: 0,
+    tags: ["Next.js", "TailwindCSS", "shadcn/ui", "framer-motion"],
+    demo_url: "https://priyankrajai.com",
   },
 ];

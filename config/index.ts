@@ -26,3 +26,46 @@ export const SOCIAL_LINKS = [
   },
   { name: "X", link: "https://x.com/Ipriyankrajai", icon: XLogoIcon },
 ];
+
+export const EXPERIENCES = [
+  {
+    companyName: "Enzo Health",
+    companyImageUrl: "/company/enzo_health_logo.jpeg",
+    companyLink: "https://www.enzo.health/",
+    designation: "Sr. Full Stack Engineer",
+    startDate: "Aug 2024",
+    endDate: "Present",
+  },
+  {
+    companyName: "Speed ⚡️",
+    companyImageUrl: "/company/speed_logo.jpeg",
+    companyLink: "https://www.tryspeed.com/",
+    designation: "Software Engineer",
+    startDate: "Mar 2024",
+    endDate: "Aug 2024",
+  },
+  {
+    companyName: "JobTatkal",
+    companyImageUrl: "/company/jobtatkal_logo.jpeg",
+    companyLink: "https://www.jobtatkal.com/",
+    designation: "Software Engineer",
+    startDate: "Mar 2023",
+    endDate: "Aug 2024",
+  },
+  {
+    companyName: "OpenXcell",
+    companyImageUrl: "/company/openxcell_logo.jpeg",
+    companyLink: "https://www.openxcell.com/",
+    designation: "Software Engineer",
+    startDate: "Dec 2021",
+    endDate: "Aug 2024",
+  },
+  {
+    companyName: "Mobifly",
+    companyImageUrl: "/company/mobifly_logo.jpeg",
+    companyLink: "https://www.mobifly.com/",
+    designation: "Software Engineer",
+    startDate: "Aug 2020",
+    endDate: "Aug 2021",
+  },
+];

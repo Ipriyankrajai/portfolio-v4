@@ -7,13 +7,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { SectionShell } from "@/components/section-shell";
 import { EXPERIENCES, type Experience } from "@/config";
 
-function ExperienceItem({
-  experience,
-  isSubExperience = false,
-}: {
-  experience: Experience;
-  isSubExperience?: boolean;
-}) {
+function ExperienceItem({ experience }: { experience: Experience }) {
   return (
     <div className={cn("space-y-4")}>
       <div className="flex justify-between items-start">
@@ -48,8 +42,8 @@ function ExperienceItem({
               </span>
             )}
             <p className="text-sm text-neutral-400">{experience.designation}</p>
-            {isSubExperience && (
-              <p className="text-xs text-neutral-500">Product of OpenXcell</p>
+            {experience.subLabel && (
+              <p className="text-xs text-neutral-500">{experience.subLabel}</p>
             )}
           </div>
         </div>
@@ -62,11 +56,7 @@ function ExperienceItem({
       {experience.subExperiences && experience.subExperiences.length > 0 && (
         <div className="space-y-4 border-l-2 border-neutral-700/50 pl-6 ml-6">
           {experience.subExperiences.map((subExp) => (
-            <ExperienceItem
-              key={subExp.companyName}
-              experience={subExp}
-              isSubExperience={true}
-            />
+            <ExperienceItem key={subExp.companyName} experience={subExp} />
           ))}
         </div>
       )}

@@ -35,6 +35,7 @@ export interface Experience {
   startDate: string;
   endDate: string;
   subExperiences?: Experience[];
+  subLabel?: string;
 }
 
 // Updated EXPERIENCES data structure
@@ -62,6 +63,7 @@ export const EXPERIENCES: Experience[] = [
         designation: "Software Engineer",
         startDate: "Mar 2024",
         endDate: "Aug 2024",
+        subLabel: "Product of OpenXcell",
       },
       {
         companyName: "JobTatkal",
@@ -70,6 +72,7 @@ export const EXPERIENCES: Experience[] = [
         designation: "Software Engineer",
         startDate: "Mar 2023",
         endDate: "Aug 2024",
+        subLabel: "Product of OpenXcell",
       },
     ],
   },

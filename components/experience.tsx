@@ -18,11 +18,6 @@ function ExperienceItem({
     <div className={cn("space-y-4")}>
       <div className="flex justify-between items-start">
         <div className="flex items-center gap-4">
-          {/* {isSubExperience && (
-            <div className="flex items-center text-neutral-500">
-              <ChevronRight className="size-4" />
-            </div>
-          )} */}
           <div className="rounded-full border border-neutral-700/50 p-1">
             <Image
               src={experience.companyImageUrl}

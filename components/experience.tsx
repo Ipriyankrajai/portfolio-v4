@@ -11,8 +11,8 @@ import { EXPERIENCES, type Experience } from "@/config";
 function ExperienceItem({ experience }: { experience: Experience }) {
   return (
     <div className={cn("space-y-4")}>
-      <div className="flex justify-between items-start">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex items-center gap-2 sm:gap-4">
           <div className="rounded-full border border-neutral-700/50 p-1">
             <Image
               src={experience.companyImageUrl}
@@ -48,7 +48,7 @@ function ExperienceItem({ experience }: { experience: Experience }) {
             )}
           </div>
         </div>
-        <p className="text-sm text-neutral-400 shrink-0">
+        <p className="mt-1 text-sm text-neutral-400 sm:mt-0 sm:shrink-0">
           {experience.startDate} - {experience.endDate}
         </p>
       </div>

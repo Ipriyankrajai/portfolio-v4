@@ -5,6 +5,7 @@ import { ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { SectionShell } from "@/components/section-shell";
+import { MagicCard } from "@/components/ui/magic-card";
 import { EXPERIENCES, type Experience } from "@/config";
 
 function ExperienceItem({ experience }: { experience: Experience }) {
@@ -72,8 +73,16 @@ export async function Experience() {
       </h2>
       <ul className="flex flex-col gap-6">
         {EXPERIENCES.map((experience) => (
-          <li key={experience.companyName}>
-            <ExperienceItem experience={experience} />
+          <li
+            key={experience.companyName}
+            className="rounded-lg bg-gradient-to-br from-neutral-500/50 to-neutral-950 to-90% p-px"
+          >
+            <MagicCard
+              wrapperClassName="rounded-lg px-4 pb-4 pt-3 bg-gradient-to-br from-neutral-900 to-neutral-950 to-90%"
+              className="flex flex-col gap-4 rounded-lg"
+            >
+              <ExperienceItem experience={experience} />
+            </MagicCard>
           </li>
         ))}
       </ul>

@@ -26,7 +26,19 @@ export const SOCIAL_LINKS = [
   { name: "X", link: "https://x.com/Ipriyankrajai", icon: XLogoIcon },
 ];
 
-export const EXPERIENCES = [
+// Updated interface to support nested experiences
+export interface Experience {
+  companyName: string;
+  companyImageUrl: string;
+  companyLink?: string;
+  designation: string;
+  startDate: string;
+  endDate: string;
+  subExperiences?: Experience[];
+}
+
+// Updated EXPERIENCES data structure
+export const EXPERIENCES: Experience[] = [
   {
     companyName: "Enzo Health",
     companyImageUrl: "/company/enzo_health_logo.jpeg",
@@ -36,28 +48,30 @@ export const EXPERIENCES = [
     endDate: "Present",
   },
   {
-    companyName: "Speed ⚡️",
-    companyImageUrl: "/company/speed_logo.jpeg",
-    companyLink: "https://www.tryspeed.com/",
-    designation: "Software Engineer",
-    startDate: "Mar 2024",
-    endDate: "Aug 2024",
-  },
-  {
-    companyName: "JobTatkal",
-    companyImageUrl: "/company/jobtatkal_logo.jpeg",
-    companyLink: "https://www.jobtatkal.com/",
-    designation: "Software Engineer",
-    startDate: "Mar 2023",
-    endDate: "Aug 2024",
-  },
-  {
     companyName: "OpenXcell",
     companyImageUrl: "/company/openxcell_logo.jpeg",
     companyLink: "https://www.openxcell.com/",
     designation: "Software Engineer",
     startDate: "Dec 2021",
     endDate: "Aug 2024",
+    subExperiences: [
+      {
+        companyName: "Speed ⚡️",
+        companyImageUrl: "/company/speed_logo.jpeg",
+        companyLink: "https://www.tryspeed.com/",
+        designation: "Software Engineer",
+        startDate: "Mar 2024",
+        endDate: "Aug 2024",
+      },
+      {
+        companyName: "JobTatkal",
+        companyImageUrl: "/company/jobtatkal_logo.jpeg",
+        companyLink: "https://www.jobtatkal.com/",
+        designation: "Software Engineer",
+        startDate: "Mar 2023",
+        endDate: "Aug 2024",
+      },
+    ],
   },
   {
     companyName: "Mobifly",

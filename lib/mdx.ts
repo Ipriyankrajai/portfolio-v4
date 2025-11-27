@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import { compileMDX } from "next-mdx-remote/rsc";
+import remarkGfm from "remark-gfm";
 
 const CONTENT_PATH = path.join(process.cwd(), "content/blog");
 
@@ -82,6 +83,9 @@ export async function getPostBySlug(
         source: fileContents,
         options: {
           parseFrontmatter: true,
+          mdxOptions: {
+            remarkPlugins: [remarkGfm],
+          },
         },
       });
 

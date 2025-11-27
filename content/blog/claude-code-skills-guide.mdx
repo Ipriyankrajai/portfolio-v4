@@ -1,0 +1,148 @@
+---
+slug: claude-code-skills-guide
+title: "Claude Code Skills: Turning AI into a Domain Expert"
+description: A practical guide to using Skills in Claude Code to package expertise, automate workflows, and make Claude smarter at specialized tasks.
+date: Nov 27, 2025
+tags:
+  - Claude
+  - AI
+  - Developer Tools
+---
+
+Large language models are remarkably capable, but there's a gap between general intelligence and domain expertise. Your AI assistant might know how to write React components, but does it know _your_ team's component patterns? It can write SQL, but does it understand your organization's query optimization standards?
+
+This is where Claude Skills come in: a system for packaging specialized expertise that Claude can invoke when the task demands it.
+
+## What Are Skills?
+
+Skills are organized folders containing instructions, scripts, and resources that teach Claude how to perform specialized tasks. Think of them as onboarding materials for an AI, the same documentation you'd give a new team member, structured in a way Claude can consume and apply.
+
+A skill folder typically contains:
+
+- A `SKILL.md` file describing capabilities and when to use them
+- Supporting documentation and reference files
+- Executable scripts for tasks where code is more reliable than token generation
+
+The key insight is that skills are **portable**. Build a skill once, and it works across Claude Code, the API, and claude.ai.
+
+## How Skills Work Under the Hood
+
+Skills use a progressive loading architecture designed to keep Claude fast while providing access to deep expertise.
+
+**At Startup:** Only the name and description of each installed skill is loaded into the system prompt. This consumes roughly 30-50 tokens per skill, lightweight enough that you can have dozens of skills installed without bloating your context window.
+
+**On Match:** When your prompt matches a skill's description, Claude dynamically loads the full `SKILL.md` file into context. This is when you get access to the detailed instructions and patterns.
+
+**On Demand:** If the skill references other files or scripts, they're loaded and executed only as needed. This progressive disclosure is what makes the system scalable.
+
+The three stages form a pyramid of context:
+
+1. **Startup** → Skill names + descriptions (~30-50 tokens per skill)
+2. **Match** → Full SKILL.md loaded when relevant
+3. **Execute** → Scripts and files loaded on-demand
+
+## Skills vs Other Claude Features
+
+Understanding where skills fit requires comparing them to other Claude configuration mechanisms. Each serves a distinct purpose:
+
+| Feature         | Purpose            | Scope             | Example                                      |
+| --------------- | ------------------ | ----------------- | -------------------------------------------- |
+| **CLAUDE.md**   | Project context    | Single repository | "We use Next.js 14 with App Router"          |
+| **MCP Servers** | Data integration   | External services | Connect to GitHub, databases, Linear         |
+| **Sub-agents**  | Specialized roles  | Task delegation   | A dedicated code reviewer agent              |
+| **Skills**      | Portable expertise | Cross-project     | Frontend design patterns, security standards |
+
+**CLAUDE.md files** tell Claude about your specific project: the tech stack, coding conventions, and repository structure. They live alongside your code and are repository-specific.
+
+**MCP servers** provide a universal protocol for connecting Claude to external data sources. They give Claude _access_ to information but don't teach it what to do with that information.
+
+**Sub-agents** are specialized AI assistants with fixed roles, each with their own context window, custom prompt, and tool permissions. They're great for delegation but their knowledge doesn't transfer between agents.
+
+Skills fill the gap: portable expertise that any agent can use, in any project. Your frontend developer sub-agent can use a component patterns skill. Your code reviewer sub-agent can use that same skill to verify implementations. The expertise is shared.
+
+## Getting Started with Skills in Claude Code
+
+Claude Code provides multiple ways to work with skills.
+
+### Using the Plugin Marketplace
+
+The fastest way to get started is with pre-built skills from the marketplace:
+
+```bash
+# Switch to Opus for best results
+/model opus
+
+# Add the official skills repository
+/plugin marketplace add anthropics/claude-code
+
+# Install a specific skill
+/plugin install frontend-design@claude-code-plugins
+```
+
+### Manual Installation
+
+For custom skills or those not in the marketplace, add them directly to your skills directory:
+
+```bash
+~/.claude/skills/
+├── frontend-design/
+│   ├── SKILL.md
+│   ├── typography-standards.md
+│   └── animation-patterns.md
+└── security-review/
+    ├── SKILL.md
+    └── checklist.md
+```
+
+### Using Skills in Practice
+
+Once installed, skills activate automatically when relevant. But you can also invoke them explicitly:
+
+1. Use `shift+tab` to enter plan mode
+2. Reference the skill: "Use the frontend-design skill to build a dashboard layout"
+3. Claude loads the relevant expertise and applies it to your task
+
+The explicit approach is useful when you want to ensure a specific skill's patterns are applied, even if Claude might not automatically detect the relevance.
+
+## Practical Use Cases
+
+Skills shine in scenarios where you need consistent expertise applied across multiple contexts.
+
+### Team Coding Standards
+
+Package your team's conventions into a skill that can onboard new developers, both human and AI. Include naming conventions, file structure patterns, preferred libraries, and anti-patterns to avoid.
+
+### Security Review Automation
+
+Create a skill that encodes your security checklist: input validation patterns, authentication requirements, common vulnerabilities to check for. Every PR review automatically applies your security standards.
+
+### Design System Enforcement
+
+For frontend teams, a design system skill can encode typography scales, spacing conventions, color usage rules, and component composition patterns. Claude applies these consistently whether building new components or reviewing existing ones.
+
+### Data Analysis Methodology
+
+Data teams can package their query patterns, visualization standards, and statistical approaches. Share your methodology across analysts and ensure consistent outputs.
+
+## The Composable Ecosystem
+
+The real power emerges when these features work together:
+
+| Feature     | Role                                              |
+| ----------- | ------------------------------------------------- |
+| CLAUDE.md   | Sets the foundation with project-specific context |
+| MCP Servers | Connects the data through external integrations   |
+| Sub-agents  | Specialize in their roles for task delegation     |
+| Skills      | Bring the expertise, making every piece smarter   |
+
+A practical example: You're building a feature that requires database changes. Your CLAUDE.md tells Claude about your schema conventions. An MCP server gives Claude access to your database. A sub-agent handles the migration script generation. And a database optimization skill ensures the queries follow your team's performance standards.
+
+Each layer handles what it's best at. Skills are the knowledge layer: portable, composable, and reusable.
+
+## Getting Started
+
+The skills ecosystem is still evolving, with Anthropic working on simplified creation workflows and enterprise deployment capabilities. But the foundation is solid and ready for experimentation.
+
+Start small: identify one area where you repeatedly explain the same patterns to Claude. Package that knowledge into a skill. See how it transforms your workflow.
+
+The goal isn't to replace your expertise. It's to scale it. Skills let Claude meet you where you are, with the specific knowledge your work requires.

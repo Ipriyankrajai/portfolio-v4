@@ -1,7 +1,9 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { BLOG_POSTS } from "@/config";
+import { getAllPostSlugs, getPostBySlug } from "@/lib/mdx";
+import { siteConfig } from "@/config";
 import { SectionShell } from "@/components/section-shell";
 import BlurFade from "@/components/ui/blur-fade";
 import { buttonVariants } from "@/components/ui/button";
@@ -15,14 +17,53 @@ interface BlogPostPageProps {
 
 // Generate static params for all blog posts
 export async function generateStaticParams() {
-  return BLOG_POSTS.map((post) => ({
-    slug: post.slug,
+  const slugs = getAllPostSlugs();
+  return slugs.map((slug) => ({
+    slug,
   }));
+}
+
+// Generate dynamic metadata for SEO
+export async function generateMetadata({
+  params,
+}: BlogPostPageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  const post = await getPostBySlug(resolvedParams.slug);
+
+  if (!post) {
+    return {
+      title: "Post Not Found",
+    };
+  }
+
+  return {
+    title: `${post.title} | ${siteConfig.title}`,
+    description: post.description,
+    keywords: post.tags,
+    authors: [{ name: "Priyank Rajai" }],
+    openGraph: {
+      title: post.title,
+      description: post.description,
+      url: `${siteConfig.url}/blog/${post.slug}`,
+      siteName: siteConfig.title,
+      type: "article",
+      publishedTime: post.date,
+      tags: post.tags,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.description,
+    },
+    alternates: {
+      canonical: `${siteConfig.url}/blog/${post.slug}`,
+    },
+  };
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const resolvedParams = await params;
-  const post = BLOG_POSTS.find((post) => post.slug === resolvedParams.slug);
+  const post = await getPostBySlug(resolvedParams.slug);
 
   if (!post) {
     notFound();
@@ -73,10 +114,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </BlurFade>
 
           <BlurFade delay={0.12}>
-            <div
-              className="prose prose-invert prose-neutral max-w-none prose-headings:font-semibold prose-headings:tracking-tight prose-p:leading-relaxed prose-p:text-neutral-300 prose-a:text-neutral-100 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-code:text-neutral-200 prose-code:bg-neutral-800/50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none"
-              dangerouslySetInnerHTML={{ __html: post.content }}
-            />
+            <div className="prose prose-invert prose-neutral max-w-none prose-headings:font-semibold prose-headings:tracking-tight prose-p:leading-relaxed prose-p:text-neutral-300 prose-a:text-neutral-100 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-code:text-neutral-200 prose-code:bg-neutral-800/50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none prose-pre:bg-neutral-900 prose-pre:border prose-pre:border-neutral-800">
+              {post.content}
+            </div>
           </BlurFade>
         </article>
       </SectionShell>

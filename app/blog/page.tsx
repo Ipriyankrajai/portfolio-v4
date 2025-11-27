@@ -1,5 +1,7 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import { BLOG_POSTS } from "@/config";
+import { getAllPosts } from "@/lib/mdx";
+import { siteConfig } from "@/config";
 import { SectionShell } from "@/components/section-shell";
 import { MagicCard } from "@/components/ui/magic-card";
 import BlurFade from "@/components/ui/blur-fade";
@@ -7,7 +9,32 @@ import { ArrowRight } from "lucide-react";
 
 const BLUR_FADE_DELAY = 0.04;
 
+export const metadata: Metadata = {
+  title: "Blog | " + siteConfig.title,
+  description:
+    "Thoughts, ideas, and guides on web development, React, Next.js, TypeScript, and modern technologies.",
+  openGraph: {
+    title: "Blog | " + siteConfig.title,
+    description:
+      "Thoughts, ideas, and guides on web development, React, Next.js, TypeScript, and modern technologies.",
+    url: siteConfig.url + "/blog",
+    siteName: siteConfig.title,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog | " + siteConfig.title,
+    description:
+      "Thoughts, ideas, and guides on web development, React, Next.js, TypeScript, and modern technologies.",
+  },
+  alternates: {
+    canonical: siteConfig.url + "/blog",
+  },
+};
+
 export default function BlogPage() {
+  const posts = getAllPosts();
+
   return (
     <div className="min-h-[calc(100vh-4rem)]">
       <SectionShell id="blog" className="pt-24 pb-16">
@@ -22,7 +49,7 @@ export default function BlogPage() {
           </BlurFade>
 
           <div className="flex flex-col gap-6">
-            {BLOG_POSTS.map((post, id) => (
+            {posts.map((post, id) => (
               <BlurFade key={post.slug} delay={BLUR_FADE_DELAY * 2 + id * 0.05}>
                 <Link href={`/blog/${post.slug}`} className="block group">
                   <div className="rounded-lg bg-gradient-to-br from-neutral-500/50 to-neutral-950 to-90% p-px transition-all duration-300 hover:from-neutral-400/50 hover:to-neutral-900/80">
@@ -34,7 +61,10 @@ export default function BlogPage() {
                       <article className="flex flex-col gap-3">
                         <div className="flex items-center justify-between text-sm text-neutral-500">
                           <div className="flex items-center gap-3">
-                            <time dateTime={post.date} className="font-medium text-neutral-400">
+                            <time
+                              dateTime={post.date}
+                              className="font-medium text-neutral-400"
+                            >
                               {post.date}
                             </time>
                             <span className="text-neutral-700">•</span>
@@ -50,7 +80,7 @@ export default function BlogPage() {
                             </div>
                           </div>
                         </div>
-                        
+
                         <div className="space-y-2">
                           <h2 className="text-xl font-bold text-neutral-100 group-hover:text-white transition-colors flex items-center gap-2">
                             {post.title}

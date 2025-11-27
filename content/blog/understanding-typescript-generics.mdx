@@ -1,0 +1,76 @@
+---
+slug: understanding-typescript-generics
+title: Understanding TypeScript Generics
+description: A practical guide to using Generics in TypeScript to write reusable and type-safe code.
+date: Sep 01, 2025
+tags:
+  - TypeScript
+  - Generics
+  - Programming
+---
+
+Generics are one of the most powerful features of TypeScript. They allow you to create reusable components that work with a variety of types rather than a single one.
+
+## What are Generics?
+
+Generics allow you to define a component that can work over a variety of types rather than a single one. This allows users to consume these components and use their own types.
+
+## Why use Generics?
+
+Generics provide a way to create reusable code components. They also provide type safety without compromising on flexibility.
+
+## Example
+
+Here is a simple example of a generic function:
+
+```typescript
+function identity<T>(arg: T): T {
+  return arg;
+}
+
+// Usage
+const num = identity<number>(42);
+const str = identity<string>("hello");
+```
+
+## Generic Interfaces
+
+You can also use generics with interfaces:
+
+```typescript
+interface Container<T> {
+  value: T;
+  getValue(): T;
+}
+
+class Box<T> implements Container<T> {
+  constructor(public value: T) {}
+
+  getValue(): T {
+    return this.value;
+  }
+}
+```
+
+## Generic Constraints
+
+Sometimes you want to limit the types that can be used with a generic:
+
+```typescript
+interface Lengthwise {
+  length: number;
+}
+
+function logLength<T extends Lengthwise>(arg: T): T {
+  console.log(arg.length);
+  return arg;
+}
+
+logLength("hello"); // Works - strings have length
+logLength([1, 2, 3]); // Works - arrays have length
+// logLength(42);     // Error - numbers don't have length
+```
+
+## Conclusion
+
+Generics are a fundamental part of TypeScript. Understanding them will allow you to write more flexible and robust code.

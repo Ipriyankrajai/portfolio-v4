@@ -117,3 +117,4 @@ export const PROJECTS = [
     demo_url: "https://priyankrajai.com",
   },
 ];
+

@@ -5,13 +5,15 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { NAV_ITEMS } from "@/utils/nav";
 import { useIsScrolled } from "@/hooks/use-is-scrolled";
+import { MobileNav } from "@/components/mobile-nav";
 
 export function Header() {
   const { isScrolled } = useIsScrolled();
 
   return (
     <nav aria-label="Site navigation" className="fixed z-50 w-screen">
-      <ul className="absolute left-1/2 top-4 flex -translate-x-1/2 items-center gap-4 rounded-full border px-[22px] py-2 shadow-xl">
+      <MobileNav />
+      <ul className="absolute left-1/2 top-4 hidden -translate-x-1/2 items-center gap-4 rounded-full border px-[22px] py-2 shadow-xl sm:flex">
         <div
           className={cn(
             "backdrop",

@@ -60,7 +60,7 @@ export default function BlogPage() {
                     >
                       <article className="flex flex-col gap-3">
                         <div className="flex items-center justify-between text-sm text-neutral-500">
-                          <div className="flex items-center gap-3">
+                          <div className="flex flex-wrap items-center gap-3">
                             <time
                               dateTime={post.date}
                               className="font-medium text-neutral-400"
@@ -68,7 +68,7 @@ export default function BlogPage() {
                               {post.date}
                             </time>
                             <span className="text-neutral-700">•</span>
-                            <div className="flex gap-2">
+                            <div className="flex flex-wrap gap-2">
                               {post.tags.map((tag) => (
                                 <span
                                   key={tag}

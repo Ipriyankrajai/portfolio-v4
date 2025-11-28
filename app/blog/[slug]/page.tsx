@@ -88,7 +88,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <article className="max-w-2xl mx-auto">
           <BlurFade delay={0.08}>
             <div className="flex flex-col space-y-4 mb-8 border-b border-neutral-800 pb-8">
-              <div className="flex items-center gap-3 text-sm">
+              <div className="flex flex-wrap items-center gap-3 text-sm">
                 <time
                   dateTime={post.date}
                   className="text-neutral-400 font-medium"
@@ -96,7 +96,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   {post.date}
                 </time>
                 <span className="text-neutral-700">•</span>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   {post.tags.map((tag) => (
                     <span
                       key={tag}

@@ -1,0 +1,384 @@
+---
+slug: async-job-orchestration-saga-pattern
+title: "The Saga Pattern: Orchestrating Async Jobs with Optional Dependencies"
+description: A practical guide to building robust async job workflows where steps can run in parallel, conditionally execute, and handle dependencies gracefully.
+date: Dec 29, 2025
+tags:
+  - TypeScript
+  - Backend
+  - Architecture
+---
+
+Modern applications rarely do just one thing at a time. A user action might trigger payment processing, inventory updates, shipping coordination, and notification delivery—all with different execution times and failure modes. The question isn't _whether_ you need async job orchestration, but how elegantly you can express it.
+
+This is where the saga pattern shines: a declarative way to define multi-step workflows with complex dependency relationships.
+
+## The Problem with Naive Approaches
+
+Consider an e-commerce order fulfillment workflow:
+
+1. Process payment (must complete first)
+2. Reserve inventory (can run after payment)
+3. Generate shipping label (can run parallel to inventory)
+4. Send confirmation email (needs payment, optional if email service is down)
+5. Complete order record (needs all previous steps to finish)
+
+The naive approach looks something like this:
+
+```typescript
+async function fulfillOrder(order: Order) {
+  // Process payment first
+  const paymentResult = await processPayment(order.paymentDetails);
+
+  // Run parallel steps
+  const [inventoryResult, shippingResult] = await Promise.all([
+    reserveInventory(order.items),
+    generateShippingLabel(order.shippingAddress),
+  ]);
+
+  // Send email (don't fail if this breaks)
+  try {
+    await sendConfirmationEmail(order.customerId);
+  } catch (e) {
+    console.log("Email failed, continuing anyway");
+  }
+
+  // Complete the order
+  await completeOrder(order.id);
+}
+```
+
+This works until reality kicks in:
+
+- What if the customer opted out of emails and we should skip that step entirely?
+- What if shipping label generation fails but you still want to complete the order?
+- What if you need a 5-minute timeout on payment but 30 seconds on email?
+- How do you track which steps completed, failed, or were skipped for debugging?
+- What if the system crashes after payment but before inventory reservation?
+
+The code quickly becomes a mess of conditionals, try-catch blocks, and state management.
+
+## Thinking in Sagas
+
+The saga pattern reframes the problem. Instead of imperative code, you define a **declarative workflow specification**:
+
+```typescript
+const orderFulfillment = defineSaga({
+  id: "order-fulfillment-v1",
+  version: 1,
+  inputs: orderFulfillmentSchema,
+  steps: [
+    // Step definitions here
+  ],
+});
+```
+
+Each step is a self-contained unit with:
+
+- **Identity**: A unique ID for tracking and debugging
+- **Type**: What kind of operation (JOB, WEBHOOK, etc.)
+- **Timeout**: How long to wait before considering it failed
+- **Conditions**: When should this step run at all?
+- **Dependencies**: What must complete before this step starts?
+- **Inputs**: What data does this step need?
+
+## Conditional Execution with `when`
+
+Not every step should always run. The `when` clause provides conditional execution:
+
+```typescript
+{
+  id: 'send-confirmation-email',
+  type: 'JOB',
+  timeoutMs: 30 * 1000, // 30 seconds
+  when: ({ inputs, flags }) => {
+    // Skip if customer opted out or email not provided
+    if (flags.skipEmail || inputs.skipEmailNotification) return false;
+    return !!inputs.customerEmail;
+  },
+  inputs: ({ inputs }) => ({
+    job: 'SEND_EMAIL',
+    queue: 'notifications',
+    payload: {
+      templateId: 'order-confirmation',
+      recipientEmail: inputs.customerEmail,
+      orderId: inputs.orderId,
+      customerId: inputs.customerId
+    }
+  })
+}
+```
+
+The `when` function receives both the original inputs and runtime flags. This separation is powerful: you can define static conditions based on input data, and dynamic conditions based on runtime state or feature flags.
+
+When a step's `when` returns `false`, it transitions to a `SKIPPED` state—not `FAILED`. This distinction matters for downstream dependencies.
+
+## Parallel Execution by Default
+
+Steps without explicit dependencies run in parallel. Define two independent steps, and the saga executor fires them simultaneously:
+
+```typescript
+steps: [
+  {
+    id: "reserve-inventory",
+    type: "JOB",
+    dependencies: [{ mode: "required", anyOf: ["process-payment"] }],
+    // runs after payment
+  },
+  {
+    id: "generate-shipping-label",
+    type: "JOB",
+    dependencies: [{ mode: "required", anyOf: ["process-payment"] }],
+    // runs after payment, parallel to inventory
+  },
+];
+```
+
+Both steps start immediately once payment completes. No explicit `Promise.all` needed—the parallelism is implicit in the dependency structure.
+
+## The Power of Optional Dependencies
+
+Here's where sagas really differentiate themselves. Consider a final step that should run after all preparatory steps complete, but shouldn't fail just because one optional step failed:
+
+```typescript
+{
+  id: 'complete-order',
+  type: 'JOB',
+  timeoutMs: 60 * 1000, // 1 minute
+  dependencies: [
+    { mode: 'required', anyOf: ['reserve-inventory'] },
+    { mode: 'optional', anyOf: ['generate-shipping-label'] },
+    { mode: 'optional', anyOf: ['send-confirmation-email'] }
+  ],
+  inputs: ({ inputs }) => ({
+    job: 'COMPLETE_ORDER',
+    queue: 'orders',
+    payload: {
+      orderId: inputs.orderId,
+      customerId: inputs.customerId
+    }
+  })
+}
+```
+
+The `mode: 'optional'` flag is the key. It tells the saga executor:
+
+> Wait for this dependency to reach a **terminal state**—whether that's `COMPLETED`, `FAILED`, or `SKIPPED`—then proceed.
+
+This is fundamentally different from required dependencies, which would block the downstream step if any dependency fails.
+
+## Terminal States and Flow Control
+
+Understanding terminal states is crucial for designing robust sagas:
+
+| State       | Meaning                            | Optional Dep Behavior | Required Dep Behavior |
+| ----------- | ---------------------------------- | --------------------- | --------------------- |
+| `PENDING`   | Step hasn't started yet            | Wait                  | Wait                  |
+| `RUNNING`   | Step is currently executing        | Wait                  | Wait                  |
+| `COMPLETED` | Step finished successfully         | Proceed               | Proceed               |
+| `FAILED`    | Step encountered an error          | Proceed               | Block                 |
+| `SKIPPED`   | Step was skipped via `when` clause | Proceed               | Proceed               |
+| `TIMED_OUT` | Step exceeded its timeout          | Proceed               | Block                 |
+
+Optional dependencies give you graceful degradation. If your shipping label generation fails, the order still completes—you can generate the label manually later. If the email service is down, the customer still gets their order.
+
+## A Complete Example
+
+Putting it all together, here's a realistic e-commerce order fulfillment workflow:
+
+```typescript
+import { z } from "zod";
+import { defineSaga } from "@/lib/infra/sagas";
+
+export const orderFulfillmentInputs = z.object({
+  orderId: z.string(),
+  customerId: z.string(),
+  customerEmail: z.string().optional(),
+  shippingAddress: z.object({
+    street: z.string(),
+    city: z.string(),
+    state: z.string(),
+    zip: z.string(),
+    country: z.string(),
+  }),
+  items: z.array(
+    z.object({
+      sku: z.string(),
+      quantity: z.number(),
+    })
+  ),
+  paymentMethodId: z.string(),
+  skipEmailNotification: z.boolean().optional(),
+  requiresSignature: z.boolean().optional(),
+});
+
+export type OrderFulfillmentInputs = z.infer<typeof orderFulfillmentInputs>;
+
+export const orderFulfillmentV1 = defineSaga({
+  id: "order-fulfillment-v1",
+  version: 1,
+  inputs: orderFulfillmentInputs,
+  steps: [
+    {
+      id: "process-payment",
+      type: "JOB",
+      timeoutMs: 5 * 60 * 1000, // 5 minutes
+      inputs: ({ inputs }) => ({
+        job: "PROCESS_PAYMENT",
+        queue: "payments",
+        payload: {
+          orderId: inputs.orderId,
+          customerId: inputs.customerId,
+          paymentMethodId: inputs.paymentMethodId,
+        },
+      }),
+    },
+    {
+      id: "reserve-inventory",
+      type: "JOB",
+      timeoutMs: 2 * 60 * 1000, // 2 minutes
+      dependencies: [{ mode: "required", anyOf: ["process-payment"] }],
+      inputs: ({ inputs }) => ({
+        job: "RESERVE_INVENTORY",
+        queue: "inventory",
+        payload: {
+          orderId: inputs.orderId,
+          items: inputs.items,
+        },
+      }),
+    },
+    {
+      id: "generate-shipping-label",
+      type: "JOB",
+      timeoutMs: 2 * 60 * 1000, // 2 minutes
+      dependencies: [{ mode: "required", anyOf: ["process-payment"] }],
+      when: ({ inputs }) => {
+        // Only generate label if we have a valid shipping address
+        return !!inputs.shippingAddress.street;
+      },
+      inputs: ({ inputs }) => ({
+        job: "GENERATE_SHIPPING_LABEL",
+        queue: "shipping",
+        payload: {
+          orderId: inputs.orderId,
+          address: inputs.shippingAddress,
+          requiresSignature: inputs.requiresSignature ?? false,
+        },
+      }),
+    },
+    {
+      id: "send-confirmation-email",
+      type: "JOB",
+      timeoutMs: 30 * 1000, // 30 seconds
+      dependencies: [{ mode: "required", anyOf: ["process-payment"] }],
+      when: ({ inputs, flags }) => {
+        if (flags.skipEmail || inputs.skipEmailNotification) return false;
+        return !!inputs.customerEmail;
+      },
+      inputs: ({ inputs }) => ({
+        job: "SEND_EMAIL",
+        queue: "notifications",
+        payload: {
+          templateId: "order-confirmation",
+          recipientEmail: inputs.customerEmail,
+          orderId: inputs.orderId,
+          customerId: inputs.customerId,
+        },
+      }),
+    },
+    {
+      id: "complete-order",
+      type: "JOB",
+      timeoutMs: 60 * 1000, // 1 minute
+      dependencies: [
+        { mode: "required", anyOf: ["reserve-inventory"] },
+        { mode: "optional", anyOf: ["generate-shipping-label"] },
+        { mode: "optional", anyOf: ["send-confirmation-email"] },
+      ],
+      inputs: ({ inputs }) => ({
+        job: "COMPLETE_ORDER",
+        queue: "orders",
+        payload: {
+          orderId: inputs.orderId,
+          customerId: inputs.customerId,
+        },
+      }),
+    },
+  ],
+});
+```
+
+## Visualizing the Flow
+
+The workflow above creates this execution graph:
+
+```
+                    ┌─────────────────────┐
+                    │   process-payment   │
+                    └──────────┬──────────┘
+                               │
+           ┌───────────────────┼───────────────────┐
+           │                   │                   │
+           ▼                   ▼                   ▼
+┌──────────────────┐ ┌─────────────────┐ ┌─────────────────┐
+│ reserve-inventory│ │generate-shipping│ │send-confirmation│
+│    (required)    │ │  (optional)     │ │   (optional)    │
+└────────┬─────────┘ └────────┬────────┘ └────────┬────────┘
+         │                    │                   │
+         └────────────────────┼───────────────────┘
+                              │
+                              ▼
+                    ┌─────────────────────┐
+                    │   complete-order    │
+                    └─────────────────────┘
+```
+
+Payment must succeed. Then inventory, shipping, and email run in parallel. Finally, order completion waits for all of them—but only inventory is required to succeed.
+
+## Benefits of the Declarative Approach
+
+This pattern provides several advantages over imperative orchestration:
+
+**Visibility**: The entire workflow is visible in one place. You can reason about dependencies, timeouts, and conditions without tracing through async code.
+
+**Testability**: Each step is independently testable. The saga definition itself can be validated without executing any jobs.
+
+**Resumability**: If the system crashes mid-saga, you can resume from the last known state. Each step's status is tracked independently.
+
+**Observability**: Since every step has an ID and explicit state transitions, building dashboards and alerting becomes straightforward.
+
+**Evolution**: Adding a new step or changing dependencies is a schema change, not a refactor of nested async logic.
+
+## When to Use Sagas
+
+Sagas shine when you have:
+
+- Multiple async operations with varying execution times
+- Operations that can fail independently without blocking everything
+- Need for partial success scenarios (some steps fail, others proceed)
+- Complex dependency graphs beyond simple sequential or parallel
+- Requirements for timeout management at different granularities
+- Need to track and resume long-running workflows
+
+They're overkill for simple, linear workflows where `await` chains suffice. But once you have conditional execution, optional dependencies, or need graceful degradation—the saga pattern pays for itself quickly.
+
+## Getting Started
+
+If you're building your own saga infrastructure, start with these primitives:
+
+1. **Step definition schema**: Use Zod or similar for type-safe step definitions
+2. **State machine**: Track step states (PENDING → RUNNING → COMPLETED/FAILED/SKIPPED)
+3. **Dependency resolver**: Evaluate when downstream steps can start
+4. **Executor**: Actually run the jobs, respecting timeouts and conditions
+
+The implementation complexity depends on your needs—simple in-memory execution for development, distributed execution with persistent state for production.
+
+The pattern itself is language-agnostic. Whether you're using TypeScript, Go, or Python, the concepts translate directly.
+
+## Conclusion
+
+The saga pattern transforms async job orchestration from imperative spaghetti into declarative specifications. By separating the _what_ (step definitions) from the _how_ (execution engine), you gain visibility, testability, and flexibility.
+
+Optional dependencies are the secret weapon. They let you build workflows that gracefully handle partial failures, proceeding with whatever data is available rather than failing entirely.
+
+Next time you find yourself writing nested `Promise.all` calls with complex conditional logic, consider whether a saga would express your intent more clearly. Often, it will.

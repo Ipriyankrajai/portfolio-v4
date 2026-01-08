@@ -1,0 +1,305 @@
+---
+slug: commands-ai-coding-workflow
+title: "Two /Commands That Transformed My Pull Request Workflow"
+description: A productivity tip on using reusable commands in AI coding tools to streamline pull request workflows. Here's how two simple commands transformed my daily GitHub workflow.
+date: Jan 08, 2026
+tags:
+  - AI
+  - Developer Tools
+  - Productivity
+---
+
+It's 4 PM. I've been deep in code all day, and now it's time to open a pull request. I switch to GitHub, click "New Pull Request," stare at the title field, and wonder what to write. I skim my commits (there are seven of them, half with messages like "fix" and "wip"). I write something generic, add a sparse description, and submit.
+
+Two days later, the comments roll in. My teammate wants clarification on a design decision. The CodeRabbit bot flagged a potential issue. Another reviewer asks about the test plan. I click into each thread, context-switch between the code and the discussion, and spend forty minutes on what should have been ten minutes of work.
+
+This was my life until I started treating the PR workflow like code: something you can standardize.
+
+## The Productivity Hack That Changed My PR Workflow
+
+If you're using Claude Code, Cursor, or similar AI coding tools, you already have access to /commands. These are reusable markdown files that define a workflow you can invoke with a single instruction. I'd seen them mentioned in docs but never really explored what they could do.
+
+Then I built two commands that I now use every single day. They've probably saved me hours every week, and I want to share exactly how they work.
+
+The idea is simple: instead of "I should remember the 12 things I always forget before opening a PR," I run `/create-pr` or `/respond-to-pr-comments` and let the command handle the tedious parts while I stay in control of the decisions.
+
+---
+
+## How I Create PRs with `/create-pr`
+
+My old PR creation flow looked like this: remember to commit, push, navigate to GitHub, write a title, write a description, hope I didn't forget anything, and click create. Six steps with multiple decision points, and I'd usually skip half of them because I was tired.
+
+Now I just type `/create-pr` and the command does the heavy lifting.
+
+### What My Command Does
+
+Here's the workflow I've encoded:
+
+**1. Branch Check**
+First, it validates I'm on a feature branch (not `main` or `prod`). That one check alone has saved me from at least one "why did I commit to main" moment.
+
+```bash
+git branch --show-current
+```
+
+**2. Handles Uncommitted Work**
+It runs `git status` and if there are unstaged changes, it commits them with a meaningful message based on what actually changed. No more "wip" commits polluting my history.
+
+**3. Pushes the Branch**
+Ensures my branch is pushed to remote. I can't count how many times I've tried to create a PR only to realize I never pushed.
+
+**4. Analyzes My Changes**
+This is where the output goes from generic template to actual context. The command examines my real code changes, so the PR title and description come from facts, not vibes:
+
+```bash
+git log main..HEAD --oneline       # What commits are on this branch?
+git diff main...HEAD --stat        # Which files changed?
+git diff main...HEAD               # What specifically changed?
+```
+
+**5. Generates the PR Content**
+Based on the analysis, it creates a structured PR:
+
+```markdown
+## Summary
+Brief TLDR of what this PR accomplishes
+
+## Description
+- What's changing and why
+- Motivation and context
+- Any design decisions worth noting
+
+## Test Plan
+- Step-by-step testing instructions
+- Main functionality coverage
+- Edge cases if relevant
+
+## Checklist
+- [ ] Code follows project style guidelines
+- [ ] Self-review completed
+- [ ] Test plan executed
+```
+
+**6. Asks for My Approval**
+This is crucial. I built in an explicit approval step. The command shows me the generated title and description and asks: "Does this look good?" I can approve, reject, or request changes. Nothing gets created without my sign-off.
+
+**7. Creates the PR**
+Only after I approve does it run `gh pr create` and return the URL.
+
+### Why This Works for Me
+
+- **The "blank page problem" is gone.** I stop procrastinating on PR writing because the command gives me a starting point.
+- **Descriptions stay grounded in reality.** They're derived from actual logs and diffs, not my fuzzy memory of what I did three hours ago.
+- **I'm less likely to forget the test plan.** It's always part of the output.
+- **The approval gate prevents accidents.** No sloppy PRs get created without my explicit sign-off.
+
+---
+
+## How I Handle PR Comments with `/respond-to-pr-comments`
+
+Creating PRs was only half my problem. The bigger time sink was handling reviews.
+
+My old workflow: open GitHub, find the PR, scroll through comments, context-switch to my editor, make a fix, go back to GitHub, write a response, click resolve. Repeat for every comment. With multiple reviewers and bots, this got exhausting fast.
+
+Now I run `/respond-to-pr-comments` and handle everything from my terminal.
+
+### What My Command Does
+
+**1. Gets the PR Context**
+It figures out which PR I'm working on from my current branch:
+
+```bash
+gh pr view --json number --jq .number
+```
+
+**2. Fetches All Comments**
+Pulls every active comment in one shot:
+
+```bash
+gh pr view --json comments --jq '.comments[] | {id: .id, body: .body, author: .author.login}'
+```
+
+**3. Lists Them for Review**
+Instead of clicking through GitHub's UI, I see all comments in one place. Who said what, what they're asking for, all visible at once.
+
+**4. Waits for My Direction**
+The command doesn't auto-respond. It enumerates the comments and waits for me to decide how to handle each one. I stay in control.
+
+**5. Helps Me Respond**
+For each comment, I can discuss the fix with AI assistance, make the code change without leaving my editor, and draft a response.
+
+**6. Resolves When Done**
+After I address a comment, the command can mark it resolved:
+
+```bash
+gh api graphql -f query='mutation { resolveReviewThread(input: {threadId: "<thread-id>"}) { thread { isResolved } } }'
+```
+
+### Handling Different Comment Types
+
+This workflow handles everyone who shows up in my PRs:
+
+**Teammate comments**: Technical discussions, design questions, clarification requests. I can think through the response with AI help rather than rushing a reply.
+
+**Bot reviewers**: CodeRabbit, Cursor bug bot, and similar tools leave automated feedback. Many are straightforward fixes, and the command helps me triage and address them quickly.
+
+**Nitpicks vs. blockers**: I can scan all feedback at once to prioritize what needs attention now versus what can wait.
+
+---
+
+## My Before vs. After
+
+| Workflow Step | Before | After |
+|--------------|--------|-------|
+| Create a PR | 6+ manual steps, 5-10 minutes | One command, 1-2 minutes |
+| Write description | From memory, often sparse | Generated from actual changes |
+| Handle review comments | Click through GitHub UI | All comments in terminal |
+| Make fixes | Context-switch editor ↔ browser | Stay in my editor |
+| Mark resolved | Click each thread individually | Command handles resolution |
+
+The time savings compound. A typical PR lifecycle that took 30-40 minutes of scattered attention now takes 10-15 minutes of focused work.
+
+---
+
+## Tips From Building These Commands
+
+After using these daily for a while, here's what I've learned:
+
+**1. Name commands for the action, not the tool**
+I use `/create-pr` instead of `/gh-pr-create`. I want to invoke what I'm trying to do, not remember which CLI it uses.
+
+**2. Build in approval checkpoints**
+Commands that ask before acting are safer. My `/create-pr` command explicitly waits for my okay before creating anything. This builds trust that the command won't surprise me.
+
+**3. Start with context validation**
+Good commands check context first. Am I on the right branch? Is the repo in the expected state? These checks prevent mistakes.
+
+**4. Structure output for scanning**
+When a command generates content, I format it clearly: sections with headers, bullet points, checklists. This makes review quick.
+
+**5. Keep commands focused**
+I have `/create-pr` for new PRs and `/respond-to-pr-comments` for reviews. Each does one workflow well instead of one mega-command that tries to do everything.
+
+### Common Pitfalls I've Hit
+
+- **Wrong base branch**: Make sure your diff comparison matches how your repo works. If you branch from `develop` instead of `main`, adjust accordingly.
+- **Forgetting `gh` auth**: Your command should fail with a helpful message if GitHub CLI isn't authenticated.
+- **Auto-doing too much**: Letting the command take irreversible actions without asking leads to regret. Approval gates keep you sane.
+
+---
+
+## The Complete Commands
+
+Here are the full command files. Save these in your tool's commands directory (e.g., `.claude/commands/` for Claude Code, `.cursor/commands/` for Cursor, etc.) and start using them immediately.
+
+### `/create-pr` Command
+
+Create this file at `commands/create-pr.md` in your tool's directory:
+
+~~~markdown
+# Create Pull Request
+
+## Overview
+Create a GitHub Pull Request with a comprehensive description based on the current branch changes.
+
+## Prerequisites
+- Must be on a feature branch (not `main` or `prod`)
+- Must have `gh` CLI installed and authenticated
+
+## Steps
+
+1. **Validate branch**
+   - Run `git branch --show-current` to get current branch name
+   - If on `main` or `prod`, stop and ask user to switch to a feature branch
+
+2. **Check for uncommitted changes**
+   - Run `git status` to check for staged/unstaged changes
+   - If there are uncommitted changes:
+     - Stage all relevant changes with `git add .`
+     - Create a commit with a meaningful message based on the changes
+     - Use `GIT_EDITOR=true` prefix to avoid editor blocking
+
+3. **Ensure branch is pushed**
+   - Run `git push -u origin HEAD` to push the branch to remote
+   - Use `GIT_EDITOR=true` prefix for all git commands
+
+4. **Analyze changes for PR description**
+   - Run `git log main..HEAD --oneline` to see commits on this branch
+   - Run `git diff main...HEAD --stat` to see changed files summary
+   - Run `git diff main...HEAD` to see actual code changes
+
+5. **Generate PR title and description**
+   Based on the code analysis, generate:
+
+   **Title:** `<feature_area>: <Title>` (80 characters or less)
+
+   **Body:** Use this template structure:
+   - Summary section with 1-2 sentence TLDR
+   - Description section with bullet points explaining changes
+   - Test Plan section with step-by-step testing instructions
+   - Checklist section with style guidelines, self-review, and test plan items
+
+6. **🔍 VERIFICATION STEP - Ask for user approval**
+   - Display the generated PR title and full description clearly
+   - Format the output so it's easy to review
+   - Ask the user: **"Does this PR title and description look good? (yes/no/suggest changes)"**
+   - Wait for user response:
+     - If **"yes"** or similar affirmative → Proceed to step 7
+     - If **"no"** or user provides feedback → Modify the title/description based on their feedback, then ask for approval again
+     - Repeat until user approves
+
+7. **Create the PR**
+   - Only proceed after user approval from step 6
+   - Use `gh pr create` with the approved title and body
+   - Target `main` as the base branch
+
+8. **Return the PR link**
+   - After PR creation, display the PR URL prominently so user can click it
+   - Format: "✅ PR created: <URL>"
+
+## Important
+- Always use `GIT_EDITOR=true` prefix for git commands to avoid blocking
+- Base the description on actual code changes, not assumptions
+- Keep the title concise (80 chars max)
+- Mark checklist items with [x] if they appear done based on the diff
+- If PR creation fails, show the error and suggest fixes
+- **NEVER create the PR without explicit user approval of the title and description**
+~~~
+
+---
+
+### `/respond-to-pr-comments` Command
+
+Create this file at `commands/respond-to-pr-comments.md` in your tool's directory:
+
+~~~markdown
+Task is to resolve all active comments on PR in GitHub.
+
+First enumerate them, and then let's discuss each one. Wait for direction from me before moving forward on a fix.
+
+Use `gh` CLI to perform operations
+
+# Get PR number from current branch
+gh pr view --json number --jq .number
+
+# Get all comments
+gh pr view --json comments --jq '.comments[] | {id: .id, body: .body, author: .author.login}'
+
+# Mark comment as resolved
+gh api graphql -f query='mutation { resolveReviewThread(input: {threadId: "<thread-id>"}) { thread { isResolved } } }'
+~~~
+
+---
+
+## Try It Yourself
+
+You don't need to automate everything overnight. Start by identifying one task that:
+- You do frequently (at least a few times per week)
+- Involves multiple steps or commands
+- Requires remembering specific patterns or templates
+
+Create a command for that one task. Use it for a week. Iterate on what's missing.
+
+For me, PR creation and review were the obvious wins. Once those were automated into repeatable workflows, my PR days stopped feeling messy and started feeling... boring.
+
+And boring is the whole point.

@@ -41,11 +41,50 @@ export async function GET(req: NextRequest) {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: "60px",
-          background:
-            "linear-gradient(135deg, #0a0a0a 0%, #171717 50%, #262626 100%)",
+          background: "#0a0a0a",
           fontFamily: "Geist",
+          position: "relative",
+          overflow: "hidden",
         }}
       >
+        {/* Spotlight effect */}
+        <svg
+          style={{
+            position: "absolute",
+            top: "-50%",
+            left: "-20%",
+            width: "120%",
+            height: "150%",
+            pointerEvents: "none",
+          }}
+          viewBox="0 0 3787 2842"
+          fill="none"
+        >
+          <defs>
+            <filter
+              id="spotlight-blur"
+              x="0"
+              y="0"
+              width="100%"
+              height="100%"
+              filterUnits="userSpaceOnUse"
+              colorInterpolationFilters="sRGB"
+            >
+              <feGaussianBlur stdDeviation="151" result="blur" />
+            </filter>
+          </defs>
+          <ellipse
+            cx="1924.71"
+            cy="273.501"
+            rx="1924.71"
+            ry="273.501"
+            transform="matrix(-0.822377 -0.568943 -0.568943 0.822377 3631.88 2291.09)"
+            fill="white"
+            fillOpacity="0.21"
+            filter="url(#spotlight-blur)"
+          />
+        </svg>
+
         {/* Top section with date */}
         {date && (
           <div
@@ -53,6 +92,8 @@ export async function GET(req: NextRequest) {
               display: "flex",
               alignItems: "center",
               gap: "12px",
+              position: "relative",
+              zIndex: 10,
             }}
           >
             <div
@@ -75,6 +116,8 @@ export async function GET(req: NextRequest) {
             gap: "24px",
             flex: 1,
             justifyContent: "center",
+            position: "relative",
+            zIndex: 10,
           }}
         >
           {/* Title */}
@@ -151,6 +194,8 @@ export async function GET(req: NextRequest) {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            position: "relative",
+            zIndex: 10,
           }}
         >
           <div

@@ -12,6 +12,7 @@ export interface BlogPostFrontmatter {
   description: string;
   date: string;
   tags: string[];
+  image?: string;
 }
 
 export interface BlogPostMeta extends BlogPostFrontmatter {
@@ -51,6 +52,7 @@ export function getAllPosts(): BlogPostMeta[] {
       description: data.description,
       date: data.date,
       tags: data.tags || [],
+      image: data.image,
       filePath: fileName,
     } as BlogPostMeta;
   });
@@ -95,6 +97,7 @@ export async function getPostBySlug(
         description: frontmatter.description,
         date: frontmatter.date,
         tags: frontmatter.tags || [],
+        image: frontmatter.image,
         content,
       };
     }

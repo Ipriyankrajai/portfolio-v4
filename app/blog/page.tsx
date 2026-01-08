@@ -9,23 +9,36 @@ import { ArrowRight } from "lucide-react";
 
 const BLUR_FADE_DELAY = 0.04;
 
+const BLOG_TITLE = "Blog";
+const BLOG_DESCRIPTION =
+  "Thoughts, ideas, and guides on web development, React, Next.js, TypeScript, and modern technologies.";
+const ogImageUrl = `${siteConfig.url}/api/og?title=${encodeURIComponent(
+  BLOG_TITLE
+)}&description=${encodeURIComponent(BLOG_DESCRIPTION)}`;
+
 export const metadata: Metadata = {
   title: "Blog | " + siteConfig.title,
-  description:
-    "Thoughts, ideas, and guides on web development, React, Next.js, TypeScript, and modern technologies.",
+  description: BLOG_DESCRIPTION,
   openGraph: {
     title: "Blog | " + siteConfig.title,
-    description:
-      "Thoughts, ideas, and guides on web development, React, Next.js, TypeScript, and modern technologies.",
+    description: BLOG_DESCRIPTION,
     url: siteConfig.url + "/blog",
     siteName: siteConfig.title,
     type: "website",
+    images: [
+      {
+        url: ogImageUrl,
+        width: 1200,
+        height: 630,
+        alt: BLOG_TITLE,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Blog | " + siteConfig.title,
-    description:
-      "Thoughts, ideas, and guides on web development, React, Next.js, TypeScript, and modern technologies.",
+    description: BLOG_DESCRIPTION,
+    images: [ogImageUrl],
   },
   alternates: {
     canonical: siteConfig.url + "/blog",

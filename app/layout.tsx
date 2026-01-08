@@ -17,6 +17,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const ogImageUrl = `${siteConfig.url}/api/og?title=${encodeURIComponent(
+  "Priyank Rajai"
+)}&description=${encodeURIComponent(
+  "Full-Stack Developer | Open Source Steward"
+)}`;
+
 export const metadata: Metadata = {
   title: siteConfig.title,
   description: siteConfig.description,
@@ -32,11 +38,7 @@ export const metadata: Metadata = {
     title: siteConfig.title,
     description: siteConfig.description,
     creator: "@Ipriyankrajai",
-    images: [
-      {
-        url: `${siteConfig.url}/opengraph-image.png`,
-      },
-    ],
+    images: [ogImageUrl],
   },
   openGraph: {
     type: "website",
@@ -47,7 +49,10 @@ export const metadata: Metadata = {
     locale: "en_US",
     images: [
       {
-        url: `${siteConfig.url}/opengraph-image.png`,
+        url: ogImageUrl,
+        width: 1200,
+        height: 630,
+        alt: "Priyank Rajai - Full-Stack Developer",
       },
     ],
   },

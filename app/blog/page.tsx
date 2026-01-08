@@ -11,7 +11,7 @@ const BLUR_FADE_DELAY = 0.04;
 
 const BLOG_TITLE = "Blog";
 const BLOG_DESCRIPTION =
-  "Thoughts, ideas, and guides on web development, React, Next.js, TypeScript, and modern technologies.";
+  "Practical guides on building robust systems, leveraging AI, and writing better software.";
 const ogImageUrl = `${siteConfig.url}/api/og?title=${encodeURIComponent(
   BLOG_TITLE
 )}&description=${encodeURIComponent(BLOG_DESCRIPTION)}`;
@@ -57,7 +57,8 @@ export default function BlogPage() {
               Blog
             </h1>
             <p className="max-w-[600px] text-neutral-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed mt-4">
-              Thoughts, ideas, and guides on web development and technology.
+              Practical guides on building robust systems, leveraging AI, and
+              writing better software.
             </p>
           </BlurFade>
 

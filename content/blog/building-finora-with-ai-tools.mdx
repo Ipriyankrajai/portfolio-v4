@@ -1,0 +1,442 @@
+---
+slug: building-finora-with-ai-tools
+title: "How I Built Finora in Hours Using AI-Powered Development"
+description: A step-by-step guide on how I built a complete personal finance app using AI tools for stack selection, planning, parallel execution, and design.
+date: Jan 29, 2026
+tags:
+  - AI
+  - Developer Tools
+  - Full Stack
+  - Productivity
+---
+
+What if you could build a production-ready app in hours instead of weeks? That's exactly what I did with **Finora** — a personal finance application that helps users track expenses, manage income, monitor loans, and gain insights into their financial habits.
+
+[Check out Finora →](https://finora.priyankrajai.com/)
+
+In this post, I'll walk you through the exact AI-powered workflow I used to ship Finora fast without sacrificing quality.
+
+## The Challenge
+
+Building a full-featured finance app traditionally involves:
+
+- Researching and selecting the right tech stack
+- Writing detailed specifications
+- Setting up the project structure
+- Building features one by one
+- Designing the UI/UX
+- Creating brand assets (logo, OG images)
+- Ensuring best practices are followed
+
+Each of these steps can take days or weeks. But with the right AI tools orchestrated together, I compressed this into **a few hours**.
+
+## The AI-Powered Development Stack
+
+Here's the exact toolchain I used:
+
+| Tool | Purpose | Time Saved |
+|------|---------|------------|
+| [Better T Stack](https://www.better-t-stack.dev) | Stack selection & project scaffolding | Hours of research |
+| PRD Generation | Structured requirements document | Days of planning |
+| [Get Shit Done](https://github.com/glittercowboy/get-shit-done) | Intelligent planning & parallel execution | 70% development time |
+| [frontend-design](https://skills.sh/anthropics/skills/frontend-design) | Branding, Logo, OG images | Design iterations |
+| [vercel-react-best-practices](https://skills.sh/vercel-labs/agent-skills/vercel-react-best-practices) | Code quality assurance | Review cycles |
+
+Let's break down each step.
+
+---
+
+## Step 1: Stack Selection with Better T Stack
+
+The first decision in any project is choosing the right technology stack. Instead of spending hours researching and comparing options, I used [Better T Stack](https://www.better-t-stack.dev).
+
+Better T Stack is an interactive CLI tool that helps you configure the optimal combination of:
+
+- **Frontend framework** (Next.js, React, etc.)
+- **Backend approach** (self-hosted, separate, etc.)
+- **API layer** (tRPC, REST, GraphQL)
+- **Database** (PostgreSQL, MongoDB, etc.)
+- **ORM** (Prisma, Drizzle, etc.)
+- **Authentication** (Better Auth, NextAuth, Clerk, etc.)
+- **Additional tools** (Biome, Turborepo, etc.)
+
+### The Exact Command I Used
+
+I configured my stack using [this URL](https://www.better-t-stack.dev/new?name=finora&fe-w=next&rt=none&be=self-next&db=postgres&orm=prisma&add=biome,fumadocs,turborepo,ultracite&git=false&i=false) and ran:
+
+```bash
+bun create better-t-stack@latest finora \
+  --frontend next \
+  --backend self \
+  --runtime none \
+  --api trpc \
+  --auth better-auth \
+  --payments none \
+  --database postgres \
+  --orm prisma \
+  --db-setup none \
+  --package-manager bun \
+  --no-git \
+  --web-deploy none \
+  --server-deploy none \
+  --no-install \
+  --addons biome fumadocs turborepo ultracite \
+  --examples none
+```
+
+This gave me a complete, production-ready monorepo with:
+- **Next.js** for the frontend with server components
+- **tRPC** for type-safe API layer
+- **Prisma** with **PostgreSQL** for secure financial data storage
+- **Better Auth** for modern authentication
+- **Biome** for fast linting and formatting
+- **Turborepo** for monorepo management
+- **Fumadocs** for documentation
+
+### Why a CLI Tool Instead of AI?
+
+You might wonder — why not just ask AI to scaffold the project? Here's my reasoning:
+
+1. **More Reliable** — A CLI tool with defined templates produces consistent, tested output every time. No hallucinations, no missing dependencies, no configuration guesswork.
+
+2. **Stronger Foundation** — These templates are battle-tested by thousands of developers. The patterns, folder structures, and configurations are proven to work at scale.
+
+3. **Zero Tokens Used** — Building a skeleton is a solved problem. Why burn AI tokens on something a script does perfectly? Save your AI budget for the creative work — business logic, UI design, complex problem-solving.
+
+**My Philosophy:** Use scripts and CLI tools where they excel (scaffolding, formatting, linting). Use AI where it shines (planning, problem-solving, creative implementation). This hybrid approach gives you the best of both worlds.
+
+---
+
+## Step 2: Creating the PRD (Product Requirements Document)
+
+Before writing any code, I created a comprehensive PRD. This document defined everything the app needed to do, which became the input for the next step.
+
+**Pro Tip:** A well-structured PRD is the foundation for AI-assisted development. The clearer your requirements, the better AI tools can execute.
+
+---
+
+## Step 3: Intelligent Planning & Execution with Get Shit Done
+
+This is where the magic happened. [**Get Shit Done (GSD)**](https://github.com/glittercowboy/get-shit-done) didn't just execute code — it created an entire **intelligent planning system** before writing a single line.
+
+### What GSD Generated
+
+When I fed my PRD to GSD, it created a comprehensive `.planning` directory with:
+
+```
+.planning/
+├── PROJECT.md          # Project overview and key decisions
+├── REQUIREMENTS.md     # Detailed requirements breakdown
+├── ROADMAP.md          # 6-phase roadmap with dependencies
+├── STATE.md            # Current progress and metrics
+├── config.json         # Configuration settings
+├── research/           # Deep research on architecture & pitfalls
+│   ├── ARCHITECTURE.md
+│   ├── FEATURES.md
+│   ├── PITFALLS.md
+│   ├── STACK.md
+│   └── SUMMARY.md
+├── codebase/           # Codebase conventions and patterns
+│   ├── ARCHITECTURE.md
+│   ├── CONVENTIONS.md
+│   ├── INTEGRATIONS.md
+│   ├── STACK.md
+│   ├── STRUCTURE.md
+│   └── TESTING.md
+└── phases/             # Detailed execution plans
+    ├── 01-foundation/
+    │   ├── 01-CONTEXT.md
+    │   ├── 01-RESEARCH.md
+    │   ├── 01-01-PLAN.md
+    │   ├── 01-01-SUMMARY.md
+    │   └── ...
+    └── 02-api-layer/
+        ├── 02-01-PLAN.md
+        ├── 02-02-PLAN.md
+        └── ...
+```
+
+### The Roadmap It Created
+
+GSD analyzed my PRD and generated a **6-phase roadmap** with strict dependencies:
+
+```markdown
+## Phases
+
+- [x] **Phase 1: Foundation** - Prisma schema, calculation utilities, money-as-cents patterns
+- [ ] **Phase 2: API Layer** - tRPC routers for tags, transactions, loans, and dashboard
+- [ ] **Phase 3: Tags & Transactions UI** - Tag management and transaction CRUD with filtering
+- [ ] **Phase 4: Loans UI** - Loan management, payment tracking, balance calculations
+- [ ] **Phase 5: Visualizations & Dashboard** - Charts, dashboard widgets, what-if simulator
+- [ ] **Phase 6: Onboarding & Polish** - Guided onboarding, settings, empty states
+```
+
+Each phase had:
+- **Clear goals** — What this phase accomplishes
+- **Dependencies** — What must be done first
+- **Requirements mapping** — Which PRD requirements it addresses
+- **Success criteria** — Specific conditions that must be TRUE
+
+### Research-Driven Development
+
+Before executing, GSD researched the domain and identified critical pitfalls:
+
+```markdown
+### Critical Pitfalls Identified
+
+1. **Floating-point currency calculations** — Store as integer cents, not floats
+2. **Amortization formula errors** — Use standard PMT formula, validate against bank calculators
+3. **Security theater** — Rate limiting, session expiration, input validation
+4. **Chart performance degradation** — Server-side aggregation for large datasets
+5. **Pie chart misuse** — Limit to 5 categories with "Other" grouping
+```
+
+This prevented common mistakes that would have taken days to debug.
+
+### Detailed Execution Plans
+
+Each plan contained:
+
+```markdown
+<task type="auto">
+  <name>Task 1: Create finance.prisma with all models</name>
+  <files>packages/db/prisma/schema/finance.prisma</files>
+  <action>
+    Create Transaction, Tag, TransactionTag, Loan, LoanPayment models...
+    - Store all amounts as BigInt (integer cents)
+    - Use @db.Timestamptz(3) for all DateTime fields
+    - Add composite indexes for [userId, date] queries
+  </action>
+  <verify>
+    Run `bunx prisma validate` - should report "The schemas are valid"
+  </verify>
+  <done>
+    finance.prisma exists with all 5 models, proper indexes and constraints
+  </done>
+</task>
+```
+
+### Real-Time State Tracking
+
+The `STATE.md` file tracked progress in real-time:
+
+```markdown
+## Current Position
+
+Phase: 2 of 6 (API Layer)
+Plan: 0 of 4 in current phase
+Status: Ready to plan
+Last activity: 2026-01-29 — Completed Phase 1 (Foundation)
+
+Progress: [██░░░░░░░░] 16.7% (2/12 plans)
+
+## Performance Metrics
+
+**Velocity:**
+- Total plans completed: 2
+- Average duration: 5 min
+- Total execution time: 10 min
+```
+
+### Why This Matters
+
+Traditional development is chaotic — you think as you code, make decisions on the fly, and often backtrack. GSD's approach is **plan-first**:
+
+1. **Research** → Understand the domain, identify pitfalls
+2. **Design** → Create a roadmap with dependencies
+3. **Plan** → Break phases into executable tasks with verification
+4. **Execute** → Run tasks with confidence they fit the bigger picture
+5. **Track** → Monitor progress and velocity
+
+This is how senior engineers approach complex projects — GSD just automates it.
+
+---
+
+## Step 4: Design & Branding with frontend-design
+
+Once the functionality was built, I needed to give Finora a professional, polished look. This is where Anthropic's [**frontend-design**](https://skills.sh/anthropics/skills/frontend-design) skill came in.
+
+### What frontend-design Created
+
+1. **Brand Identity**
+   - Color palette suited for a finance app (trust, stability)
+   - Typography selection
+   - Visual hierarchy
+
+2. **Logo Design**
+   - Clean, modern logo that represents financial clarity
+   - Multiple variations (light/dark mode)
+   - Favicon and app icons
+
+3. **OG Images**
+   - Social media preview images
+   - Consistent branding across platforms
+   - Optimized dimensions for each platform
+
+4. **UI Polish**
+   - Component styling
+   - Animations and micro-interactions
+   - Responsive design refinements
+
+**Result:** A distinctive, production-grade interface that doesn't look like "generic AI output."
+
+---
+
+## Step 5: Best Practices with vercel-react-best-practices
+
+The final piece was ensuring code quality. I used [**vercel-react-best-practices**](https://skills.sh/vercel-labs/agent-skills/vercel-react-best-practices) to validate:
+
+### Architecture Patterns
+- Proper component structure
+- Correct use of server vs client components
+- Optimal data fetching patterns
+
+### Performance Optimization
+- Image optimization
+- Bundle size analysis
+- Core Web Vitals compliance
+
+### Code Quality
+- TypeScript strict mode compliance
+- Proper error handling
+- Accessibility standards
+
+### Example Transformation
+
+```typescript
+// ❌ Before: Client-side data fetching
+'use client'
+export function Dashboard() {
+  const [data, setData] = useState(null)
+  useEffect(() => {
+    fetch('/api/dashboard').then(...)
+  }, [])
+}
+
+// ✅ After: Server component with direct data access
+export async function Dashboard() {
+  const data = await getDashboardData()
+  return <DashboardView data={data} />
+}
+```
+
+---
+
+## The Complete Workflow
+
+Here's the full pipeline visualized:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     IDEA: Finance App                        │
+└─────────────────────────────┬───────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│  1. BETTER T STACK                                          │
+│     Input: Project requirements                             │
+│     Output: Production-ready monorepo scaffold              │
+└─────────────────────────────┬───────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│  2. PRD CREATION                                            │
+│     Input: Feature requirements, user stories               │
+│     Output: Structured product requirements document        │
+└─────────────────────────────┬───────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│  3. GET SHIT DONE                                           │
+│     Input: PRD document                                     │
+│     Output: .planning/ folder + executed code               │
+│     - Research (pitfalls, architecture)                     │
+│     - 6-phase roadmap with dependencies                     │
+│     - Detailed task plans with verification                 │
+│     - Real-time progress tracking                           │
+└─────────────────────────────┬───────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│  4. FRONTEND-DESIGN                                         │
+│     Input: Basic UI                                         │
+│     Output: Polished design, logo, branding, OG images      │
+└─────────────────────────────┬───────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│  5. VERCEL-REACT-BEST-PRACTICES                             │
+│     Input: Codebase                                         │
+│     Output: Optimized, production-ready code                │
+└─────────────────────────────┬───────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    🚀 DEPLOYED: FINORA                      │
+│                 https://finora.priyankrajai.com/            │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Key Takeaways
+
+### 1. AI Tools Work Best in Orchestration
+No single AI tool does everything perfectly. The power comes from **combining specialized tools** in a workflow:
+- Stack selection → Planning → Execution → Design → Quality
+
+### 2. Good Input = Good Output
+The PRD was crucial. AI tools amplify your specifications — garbage in, garbage out. Invest time in clear requirements.
+
+### 3. Planning is Not Optional
+GSD's `.planning` folder wasn't overhead — it was the reason development went smoothly. Research identified pitfalls. Roadmaps prevented scope creep. Task plans ensured nothing was missed.
+
+### 4. Don't Skip the Polish
+It's tempting to ship the moment features work. But the design and best practices steps transformed Finora from "it works" to "it's professional."
+
+### 5. Know When to Intervene
+AI isn't perfect. I still made manual adjustments, especially for:
+- Business logic edge cases
+- Specific UX decisions
+- Security-sensitive code
+
+---
+
+## Resources
+
+Here are the tools I used:
+
+- [**Better T Stack**](https://www.better-t-stack.dev) — Interactive stack selection and project scaffolding
+- [**Get Shit Done**](https://github.com/glittercowboy/get-shit-done) — Intelligent planning system with research, roadmaps, and parallel execution
+- [**frontend-design**](https://skills.sh/anthropics/skills/frontend-design) — Claude Code skill for production-grade UI design
+- [**vercel-react-best-practices**](https://skills.sh/vercel-labs/agent-skills/vercel-react-best-practices) — Code quality and optimization guidelines
+
+---
+
+## What's Next?
+
+I'm continuing to iterate on Finora, adding features like:
+- Bank account integration
+- Budget alerts
+- Investment tracking
+- Multi-currency support
+
+The AI-powered workflow makes adding features fast while maintaining code quality.
+
+**Try Finora yourself:** [https://finora.priyankrajai.com/](https://finora.priyankrajai.com/)
+
+---
+
+## Your Turn
+
+Want to build something similar? Here's how to start:
+
+1. **Define your idea clearly** — What problem are you solving?
+2. **Use Better T Stack** — Get a production-ready scaffold in minutes
+3. **Create a PRD** — Features, user stories, technical requirements
+4. **Let GSD plan and execute** — Research, roadmap, parallel execution
+5. **Polish and ship** — Design and best practices matter
+
+The barrier to building great software has never been lower. The question isn't whether AI can help you build faster — it's whether you're ready to embrace a new way of working.
+
+Happy building!

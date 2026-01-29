@@ -3,8 +3,28 @@ import path from "path";
 import matter from "gray-matter";
 import { compileMDX } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
+import type { ComponentProps } from "react";
 
 const CONTENT_PATH = path.join(process.cwd(), "content/blog");
+
+// Custom components for MDX
+const mdxComponents = {
+  a: ({ href, children, ...props }: ComponentProps<"a">) => {
+    const isExternal = href?.startsWith("http") || href?.startsWith("https");
+    if (isExternal) {
+      return (
+        <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
+          {children}
+        </a>
+      );
+    }
+    return (
+      <a href={href} {...props}>
+        {children}
+      </a>
+    );
+  },
+};
 
 export interface BlogPostFrontmatter {
   slug: string;
@@ -83,6 +103,7 @@ export async function getPostBySlug(
     if (postSlug === slug) {
       const { content, frontmatter } = await compileMDX<BlogPostFrontmatter>({
         source: fileContents,
+        components: mdxComponents,
         options: {
           parseFrontmatter: true,
           mdxOptions: {

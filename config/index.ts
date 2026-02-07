@@ -89,6 +89,26 @@ export const EXPERIENCES: Experience[] = [
 export const PROJECTS = [
   {
     id: 1,
+    name: "Finora",
+    description:
+      "A full-stack personal finance app for tracking expenses, managing loans, and simulating payoff scenarios. Features interactive dashboards, spending breakdowns, amortization charts, and a what-if simulator — all with end-to-end type safety.",
+    github_url: "https://github.com/Ipriyankrajai/finora",
+    stargazers_count: 0,
+    forks_count: 0,
+    tags: [
+      "Next.js",
+      "React",
+      "tRPC",
+      "Prisma",
+      "PostgreSQL",
+      "TailwindCSS",
+      "shadcn/ui",
+      "Turborepo",
+    ],
+    demo_url: "https://finora.priyankrajai.com",
+  },
+  {
+    id: 2,
     name: "Magic Table",
     description:
       "A data table application built with Tanstack Table and nuqs, featuring filtering functionalities for efficient data management and state handling.",
@@ -106,7 +126,7 @@ export const PROJECTS = [
     demo_url: "https://magic-table.priyankrajai.com",
   },
   {
-    id: 2,
+    id: 3,
     name: "Portfolio Website",
     description:
       "A modern, responsive personal portfolio showcasing my projects and skills, built with Next.js, TailwindCSS, and shadcn/ui. Features smooth animations powered by Framer Motion, optimized performance, and a clean, minimalist design for an exceptional user experience.",

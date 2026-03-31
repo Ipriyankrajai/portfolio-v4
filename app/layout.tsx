@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Outfit, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/header";
 import { siteConfig } from "@/config";
@@ -7,14 +7,23 @@ import Footer from "@/components/footer";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const headingFont = Bricolage_Grotesque({
+  variable: "--font-heading",
   subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const bodyFont = Outfit({
+  variable: "--font-body",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const monoFont = Geist_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 const ogImageUrl = `${siteConfig.url}/api/og?title=${encodeURIComponent(
@@ -80,7 +89,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-neutral-950`}
+        className={`${headingFont.variable} ${bodyFont.variable} ${monoFont.variable} font-body antialiased bg-neutral-950`}
       >
         <Header />
         {children}

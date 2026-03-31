@@ -5,7 +5,11 @@ import { ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { SectionShell } from "@/components/section-shell";
-import { MagicCard } from "@/components/ui/magic-card";
+import {
+  SectionReveal,
+  StaggerContainer,
+  StaggerItem,
+} from "@/components/ui/section-reveal";
 import { EXPERIENCES, type Experience } from "@/config";
 
 function ExperienceItem({ experience }: { experience: Experience }) {
@@ -13,7 +17,7 @@ function ExperienceItem({ experience }: { experience: Experience }) {
     <div className={cn("space-y-4")}>
       <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex items-center gap-2 sm:gap-4">
-          <div className="rounded-full border border-neutral-700/50 p-1">
+          <div className="rounded-full border border-white/10 p-1">
             <Image
               src={experience.companyImageUrl}
               alt={`${experience.companyName} logo`}
@@ -31,7 +35,7 @@ function ExperienceItem({ experience }: { experience: Experience }) {
                 rel="noopener noreferrer"
                 className={cn(
                   buttonVariants({ variant: "ghost" }),
-                  "h-auto gap-1.5 self-start p-0 text-base font-semibold text-neutral-100 transition-colors duration-200 hover:bg-transparent hover:text-white hover:underline active:bg-transparent"
+                  "h-auto gap-1.5 self-start p-0 text-base font-semibold text-neutral-100 transition-colors duration-200 ease-out-expo hover:bg-transparent hover:text-white hover:underline active:bg-transparent"
                 )}
               >
                 {experience.companyName}
@@ -42,20 +46,19 @@ function ExperienceItem({ experience }: { experience: Experience }) {
                 {experience.companyName}
               </span>
             )}
-            <p className="text-sm text-neutral-400">{experience.designation}</p>
+            <p className="text-sm text-neutral-500">{experience.designation}</p>
             {experience.subLabel && (
-              <p className="text-xs text-neutral-500">{experience.subLabel}</p>
+              <p className="text-xs text-neutral-600">{experience.subLabel}</p>
             )}
           </div>
         </div>
-        <p className="mt-1 text-sm text-neutral-400 sm:mt-0 sm:shrink-0">
+        <p className="mt-1 font-mono text-xs text-neutral-500 sm:mt-0 sm:shrink-0">
           {experience.startDate} - {experience.endDate}
         </p>
       </div>
 
-      {/* Render sub-experiences */}
       {experience.subExperiences && experience.subExperiences.length > 0 && (
-        <div className="space-y-4 border-l-2 border-neutral-700/50 pl-6 ml-6">
+        <div className="space-y-4 border-l border-white/10 pl-6 ml-6">
           {experience.subExperiences.map((subExp) => (
             <ExperienceItem key={subExp.companyName} experience={subExp} />
           ))}
@@ -68,24 +71,21 @@ function ExperienceItem({ experience }: { experience: Experience }) {
 export async function Experience() {
   return (
     <SectionShell id="experience" className="pt-20">
-      <h2 className="mb-8 bg-gradient-to-r from-neutral-300 to-neutral-700 bg-clip-text text-xl font-bold text-transparent lg:text-2xl">
-        Work experience
-      </h2>
-      <ul className="flex flex-col gap-6">
+      <SectionReveal>
+        <h2 className="mb-8 font-heading text-xl font-bold tracking-tight text-white lg:text-2xl">
+          Work experience
+        </h2>
+      </SectionReveal>
+
+      <StaggerContainer className="flex flex-col gap-4">
         {EXPERIENCES.map((experience) => (
-          <li
-            key={experience.companyName}
-            className="rounded-lg bg-gradient-to-br from-neutral-500/50 to-neutral-950 to-90% p-px"
-          >
-            <MagicCard
-              wrapperClassName="rounded-lg px-4 pb-4 pt-3 bg-gradient-to-br from-neutral-900 to-neutral-950 to-90%"
-              className="flex flex-col gap-4 rounded-lg"
-            >
+          <StaggerItem key={experience.companyName}>
+            <div className="glass-card-hover px-5 py-4">
               <ExperienceItem experience={experience} />
-            </MagicCard>
-          </li>
+            </div>
+          </StaggerItem>
         ))}
-      </ul>
+      </StaggerContainer>
     </SectionShell>
   );
 }

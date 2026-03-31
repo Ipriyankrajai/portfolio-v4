@@ -9,7 +9,7 @@ export function SkillsMarquee() {
   const hasTouchScreen = useHasTouchScreen();
 
   return (
-    <div className="relative mt-8 flex flex-col gap-3 overflow-hidden rounded-xl border border-neutral-700/50 bg-neutral-900 p-6 md:shadow-xl">
+    <div className="relative mt-8 flex flex-col gap-3 overflow-hidden rounded-xl glass-card p-6 md:shadow-xl">
       <Marquee pauseOnHover={!hasTouchScreen} className="[--gap:1.5rem]">
         {SKILLS.map((skill) => {
           const Icon = skill.icon;
@@ -36,15 +36,15 @@ export function SkillsMarquee() {
           );
         })}
       </Marquee>
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-white dark:from-background"></div>
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-white dark:from-background"></div>
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-[#09090b]"></div>
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-[#09090b]"></div>
     </div>
   );
 }
 
 function MarqueeItem({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex size-14 items-center justify-center rounded-xl bg-gradient-to-b from-neutral-800 to-neutral-950 to-90%">
+    <div className="flex size-14 items-center justify-center rounded-xl border border-white/10 bg-white/5">
       {children}
     </div>
   );

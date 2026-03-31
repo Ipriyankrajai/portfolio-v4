@@ -5,6 +5,7 @@ import {
   AnimatePresence,
   motion,
   useInView,
+  useReducedMotion,
   type Variants,
 } from "framer-motion";
 
@@ -30,6 +31,9 @@ interface BlurFadeProps {
   blur?: string;
 }
 
+// Strong ease-out curve for snappy, responsive feel
+const EASE_OUT_EXPO: [number, number, number, number] = [0.23, 1, 0.32, 1];
+
 export default function BlurFade({
   children,
   className,
@@ -44,11 +48,17 @@ export default function BlurFade({
   const ref = useRef(null);
   const inViewResult = useInView(ref, { once: true, margin: inViewMargin });
   const isInView = !inView || inViewResult;
+  const shouldReduceMotion = useReducedMotion();
+
   const defaultVariants: Variants = {
     hidden: { y: yOffset, opacity: 0, filter: `blur(${blur})` },
     visible: { y: 0, opacity: 1, filter: `blur(0px)` },
   };
   const combinedVariants = variant || defaultVariants;
+
+  if (shouldReduceMotion) {
+    return <div ref={ref} className={className}>{children}</div>;
+  }
 
   return (
     <AnimatePresence>
@@ -61,7 +71,7 @@ export default function BlurFade({
         transition={{
           delay: 0.04 + delay,
           duration,
-          ease: "easeOut",
+          ease: EASE_OUT_EXPO,
         }}
         className={className}
       >

@@ -20,6 +20,15 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        heading: ["var(--font-heading)", "system-ui", "sans-serif"],
+        body: ["var(--font-body)", "system-ui", "sans-serif"],
+        mono: ["var(--font-mono)", "monospace"],
+      },
+      transitionTimingFunction: {
+        "out-expo": "cubic-bezier(0.23, 1, 0.32, 1)",
+        "in-out-expo": "cubic-bezier(0.77, 0, 0.175, 1)",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -45,6 +54,8 @@ const config = {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
+          pop: "hsl(var(--accent-pop))",
+          "pop-muted": "hsl(var(--accent-pop-muted))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -81,7 +92,7 @@ const config = {
         },
         pulse: {
           "0%": {
-            boxShadow: "0 0 0 0px #fb923c",
+            boxShadow: "0 0 0 0px hsl(var(--accent-pop))",
           },
           "50%": {
             opacity: "1",
@@ -98,6 +109,18 @@ const config = {
           from: { transform: "translateY(0)" },
           to: { transform: "translateY(calc(-100% - var(--gap)))" },
         },
+        "fade-in-up": {
+          from: {
+            opacity: "0",
+            transform: "translateY(20px)",
+            filter: "blur(4px)",
+          },
+          to: {
+            opacity: "1",
+            transform: "translateY(0)",
+            filter: "blur(0px)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -106,6 +129,8 @@ const config = {
         pulse: "pulse 2s infinite",
         marquee: "marquee var(--duration) linear infinite",
         "marquee-vertical": "marquee-vertical var(--duration) linear infinite",
+        "fade-in-up":
+          "fade-in-up 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards",
       },
     },
   },

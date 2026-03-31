@@ -3,7 +3,6 @@ import { ExternalLink, GitFork, Star } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import { MagicCard } from "@/components/ui/magic-card";
 import {
   Tooltip,
   TooltipContent,
@@ -12,25 +11,26 @@ import {
 } from "@/components/ui/tooltip";
 import { GitHubIcon } from "@/components/icons/github-icon";
 import { SectionShell } from "@/components/section-shell";
+import {
+  SectionReveal,
+  StaggerContainer,
+  StaggerItem,
+} from "@/components/ui/section-reveal";
 import { PROJECTS } from "@/config";
 
 export async function Projects() {
   return (
     <SectionShell id="projects" className="pt-20">
-      <h2 className="mb-8 bg-gradient-to-r from-neutral-300 to-neutral-700 bg-clip-text text-xl font-bold text-transparent lg:text-2xl">
-        Projects
-      </h2>
+      <SectionReveal>
+        <h2 className="mb-8 font-heading text-xl font-bold tracking-tight text-white lg:text-2xl">
+          Projects
+        </h2>
+      </SectionReveal>
 
-      <div className="grid grid-cols-1 gap-6">
+      <StaggerContainer className="grid grid-cols-1 gap-4">
         {PROJECTS.map((project) => (
-          <div
-            key={project.id}
-            className="rounded-lg bg-gradient-to-br from-neutral-500/50 to-neutral-950 to-90% p-px"
-          >
-            <MagicCard
-              wrapperClassName="rounded-lg px-4 pb-4 pt-3 bg-gradient-to-br from-neutral-900 to-neutral-950 to-90%"
-              className="flex flex-col gap-2 rounded-lg"
-            >
+          <StaggerItem key={project.id}>
+            <div className="glass-card-hover px-5 py-4">
               <div className="mb-2 flex items-center justify-between">
                 <Link
                   href={project.github_url}
@@ -38,7 +38,7 @@ export async function Projects() {
                   rel="noopener noreferrer"
                   className={cn(
                     buttonVariants({ variant: "ghost" }),
-                    "h-auto p-0 text-base font-semibold hover:bg-transparent hover:underline active:bg-transparent"
+                    "h-auto p-0 text-base font-semibold text-white hover:bg-transparent hover:underline active:bg-transparent"
                   )}
                 >
                   {project.name}
@@ -60,10 +60,10 @@ export async function Projects() {
                           <span className="sr-only">
                             View source code of {project.name}
                           </span>
-                          <GitHubIcon className="size-4" />
+                          <GitHubIcon className="size-4 text-neutral-500 transition-colors duration-200 hover:text-white" />
                         </Link>
                       </TooltipTrigger>
-                      <TooltipContent className="bg-gradient-to-t from-neutral-800 to-neutral-950">
+                      <TooltipContent className="glass-card border-white/10">
                         View source code
                       </TooltipContent>
                     </Tooltip>
@@ -82,10 +82,10 @@ export async function Projects() {
                           <span className="sr-only">
                             Visit website of {project.name}
                           </span>
-                          <ExternalLink className="size-4" />
+                          <ExternalLink className="size-4 text-neutral-500 transition-colors duration-200 hover:text-white" />
                         </Link>
                       </TooltipTrigger>
-                      <TooltipContent className="bg-gradient-to-t from-neutral-800 to-neutral-950">
+                      <TooltipContent className="glass-card border-white/10">
                         Visit website
                       </TooltipContent>
                     </Tooltip>
@@ -93,14 +93,14 @@ export async function Projects() {
                 </div>
               </div>
 
-              <p className="text-neutral-100">{project.description}</p>
+              <p className="text-sm text-neutral-400 leading-relaxed">{project.description}</p>
 
-              <div className="flex items-center gap-6">
+              <div className="mt-3 flex items-center gap-6">
                 <div className="flex items-center gap-1.5">
-                  <Star className="size-4 text-neutral-400" />
+                  <Star className="size-3.5 text-neutral-500" />
                   <span
                     aria-hidden="true"
-                    className="text-sm font-medium text-neutral-400"
+                    className="text-xs font-medium text-neutral-500"
                   >
                     {project.stargazers_count}
                   </span>
@@ -110,10 +110,10 @@ export async function Projects() {
                 </div>
 
                 <div className="flex items-center gap-1.5">
-                  <GitFork className="size-4 text-neutral-400" />
+                  <GitFork className="size-3.5 text-neutral-500" />
                   <span
                     aria-hidden="true"
-                    className="text-sm font-medium text-neutral-400"
+                    className="text-xs font-medium text-neutral-500"
                   >
                     {project.forks_count}
                   </span>
@@ -125,21 +125,21 @@ export async function Projects() {
 
               <ul
                 aria-label="Tech stack"
-                className="mt-2 flex flex-wrap items-center gap-2"
+                className="mt-3 flex flex-wrap items-center gap-2"
               >
                 {project.tags?.map((tag) => (
                   <li
                     key={tag}
-                    className="rounded border border-neutral-700/50 bg-accent px-1.5 py-0.5 text-xs font-medium"
+                    className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-xs font-medium text-neutral-400 transition-colors duration-200 ease-out-expo hover:border-white/20 hover:text-neutral-200"
                   >
                     {tag}
                   </li>
                 ))}
               </ul>
-            </MagicCard>
-          </div>
+            </div>
+          </StaggerItem>
         ))}
-      </div>
+      </StaggerContainer>
     </SectionShell>
   );
 }

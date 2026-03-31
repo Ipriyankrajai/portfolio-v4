@@ -130,6 +130,18 @@ html {
   }
 }
 
+.blog-nav-btn {
+  transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.blog-nav-btn:active {
+  transition-duration: 100ms;
+}
+
+.blog-nav-btn .arrow-icon {
+  transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
 @supports (backdrop-filter: blur(12px)) or (-webkit-backdrop-filter: blur(12px))
   or (mask-image: none) or (-webkit-mask-image: none) {
   .backdrop-edge {

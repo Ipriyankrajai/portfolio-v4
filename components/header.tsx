@@ -20,7 +20,7 @@ export function Header() {
         />
         <div className="backdrop-edge" />
         {NAV_ITEMS.map((item) => (
-          <li key={item.title} className="last:hidden last:sm:list-item">
+          <li key={item.title}>
             <Link
               href={item.link}
               className="rounded-sm px-1 py-0.5 text-sm font-medium text-neutral-300 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-100"
@@ -29,6 +29,32 @@ export function Header() {
             </Link>
           </li>
         ))}
+
+        {/* Blog — separate page, styled as button to signal navigation away */}
+        <li className="hidden sm:list-item">
+          <Link
+            href="/blog"
+            className="blog-nav-btn group relative inline-flex items-center gap-1 rounded-full border border-neutral-700 bg-white/[0.06] px-3 py-1 text-sm font-medium text-neutral-200 transition-all duration-200 hover:border-neutral-500 hover:bg-white/[0.1] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-100 active:scale-[0.97]"
+          >
+            Blog
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 12 12"
+              fill="none"
+              className="arrow-icon transition-transform duration-200 group-hover:translate-x-[2px]"
+              aria-hidden="true"
+            >
+              <path
+                d="M2.5 6H9.5M9.5 6L6.5 3M9.5 6L6.5 9"
+                stroke="currentColor"
+                strokeWidth="1.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </Link>
+        </li>
       </ul>
     </nav>
   );

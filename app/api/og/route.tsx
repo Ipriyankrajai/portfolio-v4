@@ -202,18 +202,34 @@ export async function GET(req: NextRequest) {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "12px",
+              gap: "16px",
             }}
           >
-            {/* Gradient accent bar */}
+            {/* Logo badge */}
             <div
               style={{
-                width: "4px",
-                height: "32px",
-                background: "linear-gradient(180deg, #fafafa 0%, #737373 100%)",
-                borderRadius: "2px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "40px",
+                height: "40px",
+                borderRadius: "10px",
+                border: "2px solid #737373",
+                background: "#171717",
               }}
-            />
+            >
+              <span
+                style={{
+                  fontSize: "22px",
+                  fontWeight: 700,
+                  color: "#f5f5f5",
+                  fontFamily: "monospace",
+                  lineHeight: 1,
+                }}
+              >
+                P
+              </span>
+            </div>
             <div
               style={{
                 fontSize: "22px",

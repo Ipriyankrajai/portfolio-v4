@@ -90,8 +90,6 @@ export const PROJECTS = [
   {
     id: 1,
     name: "Finora",
-    type: "FULL-STACK / FINANCE",
-    color: "cyan",
     description:
       "A full-stack personal finance app for tracking expenses, managing loans, and simulating payoff scenarios. Features interactive dashboards, spending breakdowns, amortization charts, and a what-if simulator — all with end-to-end type safety.",
     github_url: "https://github.com/Ipriyankrajai/finora",
@@ -112,8 +110,6 @@ export const PROJECTS = [
   {
     id: 2,
     name: "Magic Table",
-    type: "FRONTEND / DATA",
-    color: "lime",
     description:
       "A data table application built with Tanstack Table and nuqs, featuring filtering functionalities for efficient data management and state handling.",
     github_url: "https://github.com/Ipriyankrajai/magic-table",
@@ -132,8 +128,6 @@ export const PROJECTS = [
   {
     id: 3,
     name: "Portfolio Website",
-    type: "WEB / PORTFOLIO",
-    color: "orange",
     description:
       "A modern, responsive personal portfolio showcasing my projects and skills, built with Next.js, TailwindCSS, and shadcn/ui. Features smooth animations powered by Framer Motion, optimized performance, and a clean, minimalist design for an exceptional user experience.",
     github_url: "https://github.com/Ipriyankrajai/portfolio-v4",

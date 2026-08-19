@@ -1,9 +1,8 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Header } from "@/components/header";
 import { siteConfig } from "@/config";
-import { getAllPosts } from "@/lib/mdx";
-import { SiteChrome } from "@/components/site-chrome";
 import Footer from "@/components/footer";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -73,30 +72,19 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport: Viewport = {
-  themeColor: "#080909",
-  colorScheme: "dark",
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const posts = getAllPosts().map((post) => ({
-    title: post.title,
-    slug: post.slug,
-  }));
-
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className="antialiased">
-        <div className="site-shell" id="top">
-          <div className="noise" aria-hidden="true" />
-          <SiteChrome posts={posts} />
-          {children}
-          <Footer />
-        </div>
+    <html lang="en" className="dark">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-neutral-950`}
+      >
+        <Header />
+        {children}
+        <Footer />
         <Analytics />
         <SpeedInsights />
       </body>

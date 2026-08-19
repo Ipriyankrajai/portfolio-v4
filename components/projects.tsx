@@ -1,169 +1,145 @@
-"use client";
+import Link from "next/link";
+import { ExternalLink, GitFork, Star } from "lucide-react";
 
-import { useEffect, useState } from "react";
-
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+import { MagicCard } from "@/components/ui/magic-card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { GitHubIcon } from "@/components/icons/github-icon";
+import { SectionShell } from "@/components/section-shell";
 import { PROJECTS } from "@/config";
 
-type Project = (typeof PROJECTS)[number];
-
-export function Projects() {
-  const [selected, setSelected] = useState<Project | null>(null);
-
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setSelected(null);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
-
-  useEffect(() => {
-    document.body.style.overflow = selected ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [selected]);
-
+export async function Projects() {
   return (
-    <section className="work-section" id="projects">
-      <div className="section-heading">
-        <div>
-          <p className="eyebrow">03 / PROJECTS</p>
-          <h2>
-            Things I&apos;ve <i>shipped.</i>
-          </h2>
-        </div>
-        <span className="section-index">
-          {String(PROJECTS.length).padStart(2, "0")} /{" "}
-          {String(PROJECTS.length).padStart(2, "0")}
-        </span>
-      </div>
+    <SectionShell id="projects" className="pt-20">
+      <h2 className="mb-8 bg-gradient-to-r from-neutral-300 to-neutral-700 bg-clip-text text-xl font-bold text-transparent lg:text-2xl">
+        Projects
+      </h2>
 
-      <div className="projects-grid">
-        {PROJECTS.map((project, index) => (
-          <article
-            className={`project-card project-${project.color}`}
+      <div className="grid grid-cols-1 gap-6">
+        {PROJECTS.map((project) => (
+          <div
             key={project.id}
-            onClick={() => setSelected(project)}
-            tabIndex={0}
-            onKeyDown={(event) => event.key === "Enter" && setSelected(project)}
-            aria-label={`Open case study for ${project.name}`}
+            className="rounded-lg bg-gradient-to-br from-neutral-500/50 to-neutral-950 to-90% p-px"
           >
-            <div className="project-visual">
-              <span className="project-number">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <div className="visual-ui">
-                <div className="visual-bar" />
-                <div className="visual-lines">
-                  <i />
-                  <i />
-                  <i />
-                </div>
-                <div className="visual-orb" />
-              </div>
-              <span className="open-icon">↗</span>
-            </div>
-            <div className="project-info">
-              <div>
-                <p className="project-type">{project.type}</p>
-                <h3>{project.name}</h3>
-              </div>
-              <span className="project-arrow">↗</span>
-            </div>
-            <p className="project-description">{project.description}</p>
-            <div className="project-footer">
-              <span className="project-links">
-                <a
+            <MagicCard
+              wrapperClassName="rounded-lg px-4 pb-4 pt-3 bg-gradient-to-br from-neutral-900 to-neutral-950 to-90%"
+              className="flex flex-col gap-2 rounded-lg"
+            >
+              <div className="mb-2 flex items-center justify-between">
+                <Link
                   href={project.github_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={(event) => event.stopPropagation()}
+                  className={cn(
+                    buttonVariants({ variant: "ghost" }),
+                    "h-auto p-0 text-base font-semibold hover:bg-transparent hover:underline active:bg-transparent"
+                  )}
                 >
-                  CODE ↗
-                </a>
-                <a
-                  href={project.demo_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(event) => event.stopPropagation()}
-                >
-                  LIVE ↗
-                </a>
-              </span>
-              <span className="project-stack">
-                {project.tags.slice(0, 3).join(" · ")}
-                {project.tags.length > 3 && ` +${project.tags.length - 3}`}
-              </span>
-            </div>
-          </article>
+                  {project.name}
+                </Link>
+
+                <div className="flex items-center gap-4">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link
+                          href={project.github_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={cn(
+                            buttonVariants({ variant: "ghost" }),
+                            "tap-target h-auto p-0 hover:bg-transparent active:bg-transparent"
+                          )}
+                        >
+                          <span className="sr-only">
+                            View source code of {project.name}
+                          </span>
+                          <GitHubIcon className="size-4" />
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-gradient-to-t from-neutral-800 to-neutral-950">
+                        View source code
+                      </TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link
+                          href={project.demo_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={cn(
+                            buttonVariants({ variant: "ghost" }),
+                            "tap-target h-auto p-0 hover:bg-transparent active:bg-transparent"
+                          )}
+                        >
+                          <span className="sr-only">
+                            Visit website of {project.name}
+                          </span>
+                          <ExternalLink className="size-4" />
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-gradient-to-t from-neutral-800 to-neutral-950">
+                        Visit website
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+              </div>
+
+              <p className="text-neutral-100">{project.description}</p>
+
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-1.5">
+                  <Star className="size-4 text-neutral-400" />
+                  <span
+                    aria-hidden="true"
+                    className="text-sm font-medium text-neutral-400"
+                  >
+                    {project.stargazers_count}
+                  </span>
+                  <span className="sr-only">
+                    {`${project.stargazers_count} stars`}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-1.5">
+                  <GitFork className="size-4 text-neutral-400" />
+                  <span
+                    aria-hidden="true"
+                    className="text-sm font-medium text-neutral-400"
+                  >
+                    {project.forks_count}
+                  </span>
+                  <span className="sr-only">
+                    {`${project.forks_count} forks`}
+                  </span>
+                </div>
+              </div>
+
+              <ul
+                aria-label="Tech stack"
+                className="mt-2 flex flex-wrap items-center gap-2"
+              >
+                {project.tags?.map((tag) => (
+                  <li
+                    key={tag}
+                    className="rounded border border-neutral-700/50 bg-accent px-1.5 py-0.5 text-xs font-medium"
+                  >
+                    {tag}
+                  </li>
+                ))}
+              </ul>
+            </MagicCard>
+          </div>
         ))}
       </div>
-
-      {selected && (
-        <div
-          className="case-backdrop"
-          role="presentation"
-          onClick={() => setSelected(null)}
-        >
-          <article
-            className="case-study"
-            role="dialog"
-            aria-modal="true"
-            aria-label={`${selected.name} case study`}
-            onClick={(event) => event.stopPropagation()}
-          >
-            <button className="close-case" onClick={() => setSelected(null)}>
-              CLOSE ×
-            </button>
-            <p className="eyebrow">CASE STUDY / {selected.type}</p>
-            <h2>{selected.name}</h2>
-            <p className="case-lead">{selected.description}</p>
-            <div className="case-stats">
-              <div>
-                <span>STARS</span>
-                <b>★ {selected.stargazers_count}</b>
-              </div>
-              <div>
-                <span>FORKS</span>
-                <b>⑂ {selected.forks_count}</b>
-              </div>
-              <div>
-                <span>STACK</span>
-                <b>{selected.tags.length} TOOLS</b>
-              </div>
-            </div>
-            <p className="case-stack">{selected.tags.join(" · ")}</p>
-            <div className={`case-art case-${selected.color}`}>
-              <span>PROJECT SYSTEM / LIVE</span>
-              <div className="case-bars">
-                <i />
-                <i />
-                <i />
-                <i />
-              </div>
-            </div>
-            <div className="case-actions">
-              <a
-                className="button button-primary"
-                href={selected.demo_url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Open live <span>↗</span>
-              </a>
-              <a
-                className="text-button"
-                href={selected.github_url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View source <span>↗</span>
-              </a>
-            </div>
-          </article>
-        </div>
-      )}
-    </section>
+    </SectionShell>
   );
 }

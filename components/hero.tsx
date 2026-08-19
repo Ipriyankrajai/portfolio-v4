@@ -1,53 +1,58 @@
 import Link from "next/link";
 
-import { siteConfig } from "@/config";
-import { cn } from "@/lib/utils";
-import BlurFade from "./ui/blur-fade";
-import { buttonVariants } from "./ui/button";
-import { Spotlight } from "./ui/spotlight";
-
-const BLUR_FADE_DELAY = 0.04;
-
 export function Hero() {
   return (
-    <section id="about" className="relative overflow-hidden">
-      <Spotlight className="md:-top-20 md:left-20 lg:-top-0 lg:left-[50] xl:-top-20 xl:left-60" />
+    <section className="hero">
+      <div className="hero-grid" aria-hidden="true" />
+      <div className="hero-orbit orbit-one" aria-hidden="true" />
+      <div className="hero-orbit orbit-two" aria-hidden="true" />
 
-      <div className="mx-auto max-w-screen-lg overflow-x-hidden px-6 sm:px-16">
-        <div className="flex h-svh w-full flex-col justify-center">
-          <BlurFade delay={BLUR_FADE_DELAY * 3}>
-            <h1 className="text-center text-xl font-bold text-neutral-200 sm:text-left lg:text-2xl">
-              Hi, I&apos;m Priyank Rajai.
-            </h1>
-          </BlurFade>
-          <BlurFade delay={BLUR_FADE_DELAY * 4} className="mb-8 mt-4">
-            <h2 className="bg-gradient-to-b from-neutral-50 to-neutral-400 bg-clip-text text-center text-4xl font-bold text-transparent sm:text-left md:text-6xl lg:text-7xl">
-              Crafting Beautiful, User-Centric Experiences for the Modern Web
-            </h2>
-          </BlurFade>
-          <BlurFade delay={BLUR_FADE_DELAY * 5}>
-            <p className="text-center text-base font-medium text-neutral-200 sm:text-left">
-              I&apos;m a passionate Full Stack Developer from India,
-              specializing in crafting high-performance web applications using
-              modern JavaScript frameworks and scalable backend technologies. I
-              also build AI-powered workflows and autonomous agents.
-            </p>
-          </BlurFade>
+      <a
+        className="status-pill"
+        href="https://www.enzo.health/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span className="pulse-dot" /> SR. FULL STACK ENGINEER @ ENZO HEALTH
+        <span className="status-arrow">↗</span>
+      </a>
 
-          <BlurFade
-            delay={BLUR_FADE_DELAY * 6}
-            className="self-center sm:self-start"
-          >
-            <Link
-              href={`${siteConfig.url}/resume.pdf`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={cn(buttonVariants(), "mt-8 rounded-full")}
-            >
-              Resume
-            </Link>
-          </BlurFade>
-        </div>
+      <p className="eyebrow reveal">
+        HI, I&apos;M PRIYANK RAJAI <span>FULL-STACK DEVELOPER</span>
+      </p>
+
+      <h1 className="hero-title reveal reveal-delay-1">
+        Crafting <em>beautiful</em>, <span className="nobreak">user-centric</span>{" "}
+        experiences for the <span>modern web</span>.
+      </h1>
+
+      <p className="hero-copy reveal reveal-delay-2">
+        I&apos;m a passionate Full Stack Developer from India, specializing in
+        crafting high-performance web applications using modern JavaScript
+        frameworks and scalable backend technologies. I also build AI-powered
+        workflows and autonomous agents.
+      </p>
+
+      <div className="hero-actions reveal reveal-delay-3">
+        <a
+          className="button button-primary"
+          href="/resume.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Resume <span>↗</span>
+        </a>
+        <Link className="text-button" href="/#contact">
+          Let&apos;s talk <span>↓</span>
+        </Link>
+      </div>
+
+      <div className="hero-meta reveal reveal-delay-3">
+        <span>BASED IN INDIA</span>
+        <span>FULL-STACK + AI AGENTS</span>
+        <span className="scroll-cue">
+          SCROLL TO EXPLORE <b>↓</b>
+        </span>
       </div>
     </section>
   );

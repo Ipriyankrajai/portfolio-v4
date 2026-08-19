@@ -2,13 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft } from "lucide-react";
 import { getAllPostSlugs, getPostBySlug } from "@/lib/mdx";
 import { siteConfig } from "@/config";
-import { SectionShell } from "@/components/section-shell";
-import BlurFade from "@/components/ui/blur-fade";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -88,70 +83,42 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   return (
-    <div className="min-h-[calc(100vh-4rem)]">
-      <SectionShell id="blog-post" className="pt-24 pb-16">
-        <BlurFade delay={0.04}>
-          <Link
-            href="/blog"
-            className={cn(
-              buttonVariants({ variant: "ghost" }),
-              "mb-8 text-neutral-400 hover:text-neutral-100 transition-colors"
-            )}
-          >
-            <ArrowLeft className="mr-2 size-4" />
-            Back to Blog
-          </Link>
-        </BlurFade>
+    <div className="page-shell">
+      <div className="article-wrap">
+        <Link href="/blog" className="text-button back-link">
+          <span>←</span> Back to blog
+        </Link>
 
-        <article className="max-w-2xl mx-auto">
+        <article>
+          <header className="article-header reveal">
+            <p className="eyebrow">
+              {post.date} <span>{post.tags.join(" / ")}</span>
+            </p>
+            <h1 className="display-title">{post.title}</h1>
+          </header>
+
           {post.image && (
-            <BlurFade delay={0.08}>
-              <div className="relative aspect-video w-full overflow-hidden rounded-lg border border-neutral-800 mb-8">
-                <Image
-                  src={post.image}
-                  alt={post.title}
-                  fill
-                  className="object-cover"
-                  priority
-                />
-              </div>
-            </BlurFade>
+            <figure className="article-image reveal reveal-delay-1">
+              <Image
+                src={post.image}
+                alt={post.title}
+                width={1200}
+                height={630}
+                priority
+              />
+            </figure>
           )}
 
-          <BlurFade delay={post.image ? 0.12 : 0.08}>
-            <div className="flex flex-col space-y-4 mb-8 border-b border-neutral-800 pb-8">
-              <div className="flex flex-wrap items-center gap-3 text-sm">
-                <time
-                  dateTime={post.date}
-                  className="text-neutral-400 font-medium"
-                >
-                  {post.date}
-                </time>
-                <span className="text-neutral-700">•</span>
-                <div className="flex flex-wrap gap-2">
-                  {post.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded border border-neutral-700/50 bg-neutral-800/50 px-2 py-0.5 text-xs font-medium text-neutral-300"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-neutral-100">
-                {post.title}
-              </h1>
-            </div>
-          </BlurFade>
+          <div className="article-body reveal reveal-delay-1">
+            {post.content}
+          </div>
 
-          <BlurFade delay={post.image ? 0.16 : 0.12}>
-            <div className="prose prose-lg prose-invert prose-neutral max-w-none prose-headings:font-semibold prose-headings:tracking-tight prose-h2:mt-12 prose-h2:mb-6 prose-h3:mt-10 prose-h3:mb-4 prose-p:leading-relaxed prose-p:text-neutral-300 prose-p:my-6 prose-a:text-neutral-100 prose-a:underline prose-a:underline-offset-4 hover:prose-a:text-white prose-strong:text-white prose-code:text-neutral-200 prose-code:bg-neutral-800/70 prose-code:px-2 prose-code:py-1 prose-code:rounded-md prose-code:text-sm prose-code:before:content-none prose-code:after:content-none prose-pre:bg-neutral-900/80 prose-pre:border prose-pre:border-neutral-800 prose-pre:rounded-lg prose-pre:my-8 prose-pre:p-5 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-inherit prose-ul:my-6 prose-ol:my-6 prose-li:my-3 prose-hr:my-10 prose-hr:border-neutral-800 prose-table:my-8 prose-table:w-full prose-table:border-collapse prose-thead:border-b prose-thead:border-neutral-700 prose-th:py-3 prose-th:px-4 prose-th:text-left prose-th:text-neutral-200 prose-th:font-semibold prose-td:py-3 prose-td:px-4 prose-td:text-neutral-300 prose-tr:border-b prose-tr:border-neutral-800">
-              {post.content}
-            </div>
-          </BlurFade>
+          <footer className="article-footer">
+            <Link href="/blog">← ALL POSTS</Link>
+            <a href="#top">BACK TO TOP ↑</a>
+          </footer>
         </article>
-      </SectionShell>
+      </div>
     </div>
   );
 }

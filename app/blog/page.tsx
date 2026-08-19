@@ -2,12 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getAllPosts } from "@/lib/mdx";
 import { siteConfig } from "@/config";
-import { SectionShell } from "@/components/section-shell";
-import { MagicCard } from "@/components/ui/magic-card";
-import BlurFade from "@/components/ui/blur-fade";
-import { ArrowRight } from "lucide-react";
-
-const BLUR_FADE_DELAY = 0.04;
 
 const BLOG_TITLE = "Blog";
 const BLOG_DESCRIPTION =
@@ -49,76 +43,46 @@ export default function BlogPage() {
   const posts = getAllPosts();
 
   return (
-    <div className="min-h-[calc(100vh-4rem)]">
-      <SectionShell id="blog" className="pt-24 pb-16">
-        <div className="flex flex-col space-y-8">
-          <BlurFade delay={BLUR_FADE_DELAY}>
-            <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/tight bg-clip-text text-transparent bg-gradient-to-r from-white to-neutral-500 pb-2">
-              Blog
-            </h1>
-            <p className="max-w-[600px] text-neutral-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed mt-4">
-              Practical guides on building robust systems, leveraging AI, and
-              writing better software.
-            </p>
-          </BlurFade>
-
-          <div className="flex flex-col gap-6">
-            {posts.map((post, id) => (
-              <BlurFade key={post.slug} delay={BLUR_FADE_DELAY * 2 + id * 0.05}>
-                <Link href={`/blog/${post.slug}`} className="block group">
-                  <div className="rounded-lg bg-gradient-to-br from-neutral-500/50 to-neutral-950 to-90% p-px transition-[background] duration-300 [transition-timing-function:cubic-bezier(0.23,1,0.32,1)] hover:from-neutral-400/50 hover:to-neutral-900/80">
-                    <MagicCard
-                      wrapperClassName="rounded-lg px-6 py-5 bg-gradient-to-br from-neutral-900 to-neutral-950 to-90%"
-                      className="flex flex-col gap-4 rounded-lg"
-                      gradientColor="#262626"
-                    >
-                      <article className="flex items-center gap-4">
-                        <div className="flex flex-col gap-3 min-w-0 flex-1">
-                          <div className="flex items-center text-sm text-neutral-500">
-                            <div className="flex flex-wrap items-center gap-3">
-                              <time
-                                dateTime={post.date}
-                                className="font-medium text-neutral-400"
-                              >
-                                {post.date}
-                              </time>
-                              <span className="text-neutral-700">&bull;</span>
-                              <div className="flex flex-wrap gap-2">
-                                {post.tags.map((tag) => (
-                                  <span
-                                    key={tag}
-                                    className="rounded border border-neutral-700/50 bg-neutral-800/50 px-2 py-0.5 text-xs font-medium text-neutral-300 transition-colors duration-200 [transition-timing-function:cubic-bezier(0.23,1,0.32,1)] group-hover:border-neutral-600/50 group-hover:text-neutral-200"
-                                  >
-                                    {tag}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="space-y-2">
-                            <h2 className="text-xl font-bold text-neutral-100 transition-colors duration-200 [transition-timing-function:cubic-bezier(0.23,1,0.32,1)] group-hover:text-white">
-                              {post.title}
-                            </h2>
-                            <p className="text-neutral-400 text-sm leading-relaxed line-clamp-2 transition-colors duration-200 group-hover:text-neutral-300">
-                              {post.description}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Arrow pinned right — consistent position regardless of title length */}
-                        <div className="flex-shrink-0 flex items-center justify-center size-10 rounded-full border border-neutral-800 bg-neutral-900/50 transition-all duration-300 [transition-timing-function:cubic-bezier(0.23,1,0.32,1)] group-hover:border-neutral-600 group-hover:bg-neutral-800/80 group-hover:scale-110 group-active:scale-95">
-                          <ArrowRight className="size-4 text-neutral-500 transition-all duration-300 [transition-timing-function:cubic-bezier(0.23,1,0.32,1)] -translate-x-0.5 opacity-70 group-hover:translate-x-0 group-hover:opacity-100 group-hover:text-neutral-200" />
-                        </div>
-                      </article>
-                    </MagicCard>
-                  </div>
-                </Link>
-              </BlurFade>
-            ))}
-          </div>
+    <div className="page-shell">
+      <div className="section-heading reveal">
+        <div>
+          <p className="eyebrow">
+            BLOG <span>{String(posts.length).padStart(2, "0")} POSTS</span>
+          </p>
+          <h1 className="display-title">
+            The <i>blog.</i>
+          </h1>
         </div>
-      </SectionShell>
+        <span className="section-index">GUIDES / NOTES</span>
+      </div>
+      <p className="muted-copy reveal reveal-delay-1" style={{ marginTop: 30 }}>
+        {BLOG_DESCRIPTION}
+      </p>
+
+      <div className="post-list">
+        {posts.map((post, index) => (
+          <Link
+            href={`/blog/${post.slug}`}
+            className="post-row reveal"
+            key={post.slug}
+            style={{ animationDelay: `${0.15 + index * 0.07}s` }}
+          >
+            <time dateTime={post.date}>{post.date}</time>
+            <div>
+              <h3>{post.title}</h3>
+              <p className="post-desc">{post.description}</p>
+              <div className="post-tags">
+                {post.tags.map((tag) => (
+                  <span key={tag}>{tag}</span>
+                ))}
+              </div>
+            </div>
+            <span className="post-arrow" aria-hidden="true">
+              ↗
+            </span>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }

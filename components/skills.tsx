@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 import { DrizzleIcon } from "@/components/icons/drizzle-icon";
 import { ExpressJsIcon } from "@/components/icons/expressjs-icon";
 import { FirebaseIcon } from "@/components/icons/firebase-icon";
@@ -11,92 +13,121 @@ import { ReactJsIcon } from "@/components/icons/reactjs-icon";
 import { SupabaseIcon } from "@/components/icons/supabase-icon";
 import { TailwindCSSIcon } from "@/components/icons/tailwindcss-icon";
 import { TypeScriptIcon } from "@/components/icons/typescript-icon";
-import { SectionShell } from "@/components/section-shell";
 
-import { SkillsMarquee } from "./skills-marquee";
+const SKILLS = [
+  { name: "TypeScript", icon: TypeScriptIcon },
+  { name: "Next.js", icon: NextJsIcon },
+  { name: "React.js", icon: ReactJsIcon },
+  { name: "TailwindCSS", icon: TailwindCSSIcon },
+  { name: "Node.js", icon: NodeJsIcon },
+  { name: "Express.js", icon: ExpressJsIcon },
+  { name: "NestJS", icon: NestJSIcon },
+  { name: "PostgreSQL", icon: PostgreSQLIcon },
+  { name: "MySQL", icon: MySQLIcon },
+  { name: "Supabase", icon: SupabaseIcon },
+  { name: "Firebase", icon: FirebaseIcon },
+  { name: "Drizzle", icon: DrizzleIcon },
+  { name: "Prisma", icon: PrismaIcon },
+];
 
-export const SKILLS = [
+const SKILL_GROUPS = [
   {
-    name: "TypeScript",
-    icon: TypeScriptIcon,
+    label: "INTERFACE",
+    tone: "skill-cyan",
+    items: ["TypeScript", "Next.js", "React.js", "TailwindCSS"],
   },
   {
-    name: "Next.js",
-    icon: NextJsIcon,
+    label: "SYSTEMS",
+    tone: "skill-lime",
+    items: ["Node.js", "Express.js", "NestJS"],
   },
   {
-    name: "React.js",
-    icon: ReactJsIcon,
-  },
-  {
-    name: "TailwindCSS",
-    icon: TailwindCSSIcon,
-  },
-  {
-    name: "Node.js",
-    icon: NodeJsIcon,
-  },
-  {
-    name: "Express.js",
-    icon: ExpressJsIcon,
-  },
-  {
-    name: "NestJS",
-    icon: NestJSIcon,
-  },
-  {
-    name: "PostgreSQL",
-    icon: PostgreSQLIcon,
-  },
-  {
-    name: "MySQL",
-    icon: MySQLIcon,
-  },
-  {
-    name: "Supabase",
-    icon: SupabaseIcon,
-  },
-  {
-    name: "Firebase",
-    icon: FirebaseIcon,
-  },
-  {
-    name: "Drizzle",
-    icon: DrizzleIcon,
-  },
-  {
-    name: "Prisma",
-    icon: PrismaIcon,
+    label: "DATA",
+    tone: "skill-orange",
+    items: ["PostgreSQL", "MySQL", "Supabase", "Firebase", "Drizzle", "Prisma"],
   },
 ];
 
-export function Skills() {
+function MarqueeRow({
+  items,
+  reverse = false,
+  duration,
+}: {
+  items: typeof SKILLS;
+  reverse?: boolean;
+  duration: string;
+}) {
   return (
-    <SectionShell id="skills" className="pt-20">
-      <h2 className="mb-8 bg-gradient-to-r from-neutral-300 to-neutral-700 bg-clip-text text-xl font-bold text-transparent lg:text-2xl">
-        Skills
-      </h2>
-
-      <ul
-        aria-label="Skills"
-        className="flex flex-wrap items-center gap-x-6 gap-y-3"
+    <div className={reverse ? "marquee-row marquee-reverse" : "marquee-row"}>
+      <div
+        className="marquee-track"
+        style={{ "--marquee-duration": duration } as CSSProperties}
       >
-        {SKILLS.map((skill) => {
+        {[...items, ...items].map((skill, index) => {
           const Icon = skill.icon;
-
           return (
-            <li
-              key={skill.name}
-              className="flex select-none items-center gap-2 text-neutral-300 transition-colors duration-200 hover:text-white"
-            >
-              <Icon className="size-4" />
-              <span className="font-semibold">{skill.name}</span>
-            </li>
+            <div className="skill-tile" key={`${skill.name}-${index}`} title={skill.name}>
+              <Icon />
+            </div>
           );
         })}
-      </ul>
+      </div>
+    </div>
+  );
+}
 
-      <SkillsMarquee />
-    </SectionShell>
+export function Skills() {
+  return (
+    <section className="approach-section" id="skills">
+      <div className="section-heading">
+        <div>
+          <p className="eyebrow">04 / SKILLS</p>
+          <h2>
+            The <i>toolkit.</i>
+          </h2>
+        </div>
+        <span className="section-index">{SKILLS.length} TOOLS</span>
+      </div>
+
+      <div className="approach-layout">
+        <div className="skill-rows" aria-label="Skills">
+          {SKILL_GROUPS.map((group) => (
+            <div className={`skill-row ${group.tone}`} key={group.label}>
+              <span>{group.label}</span>
+              <p>{group.items.join(" · ")}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="stack-map" aria-hidden="true">
+          <div className="stack-line line-a" />
+          <div className="stack-line line-b" />
+          <div className="stack-node node-core">
+            <span>CORE</span>
+            <b>FULL-STACK</b>
+          </div>
+          <div className="stack-node node-front">
+            <span>01</span>
+            <b>INTERFACE</b>
+            <small>React · Next.js</small>
+          </div>
+          <div className="stack-node node-back">
+            <span>02</span>
+            <b>SYSTEMS</b>
+            <small>Node · NestJS</small>
+          </div>
+          <div className="stack-node node-ai">
+            <span>03</span>
+            <b>DATA</b>
+            <small>Postgres · Prisma</small>
+          </div>
+        </div>
+      </div>
+
+      <div className="skills-marquee" aria-hidden="true">
+        <MarqueeRow items={SKILLS} duration="45s" />
+        <MarqueeRow items={[...SKILLS].reverse()} reverse duration="38s" />
+      </div>
+    </section>
   );
 }

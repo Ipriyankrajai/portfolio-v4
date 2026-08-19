@@ -1,79 +1,91 @@
-import { EXPERIENCES } from "@/config";
+import Image from "next/image";
+import Link from "next/link";
+import { ExternalLink } from "lucide-react";
 
-export function Experience() {
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+import { SectionShell } from "@/components/section-shell";
+import { MagicCard } from "@/components/ui/magic-card";
+import { EXPERIENCES, type Experience } from "@/config";
+
+function ExperienceItem({ experience }: { experience: Experience }) {
   return (
-    <section className="experience-section" id="experience">
-      <div className="section-heading">
-        <div>
-          <p className="eyebrow">02 / WORK EXPERIENCE</p>
-          <h2>
-            The <i>path.</i>
-          </h2>
-        </div>
-        <span className="section-index">2020 — PRESENT</span>
-      </div>
-
-      <div className="timeline">
-        <div className="timeline-progress" aria-hidden="true" />
-        {EXPERIENCES.map((experience, index) => (
-          <div className="timeline-item" key={experience.companyName}>
-            <span>
-              {experience.startDate} — {experience.endDate}
-            </span>
-            <div>
-              <h3>
-                {experience.companyLink ? (
-                  <a
-                    href={experience.companyLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {experience.companyName}
-                    <span>↗</span>
-                  </a>
-                ) : (
-                  experience.companyName
-                )}
-              </h3>
-              <p>{experience.designation}</p>
-
-              {experience.subExperiences &&
-                experience.subExperiences.length > 0 && (
-                  <div className="timeline-subs">
-                    {experience.subExperiences.map((sub) => (
-                      <div className="timeline-sub" key={sub.companyName}>
-                        {sub.subLabel && (
-                          <p className="sub-label">{sub.subLabel}</p>
-                        )}
-                        <h4>
-                          {sub.companyLink ? (
-                            <a
-                              href={sub.companyLink}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {sub.companyName}
-                              <span>↗</span>
-                            </a>
-                          ) : (
-                            sub.companyName
-                          )}
-                        </h4>
-                        <p>
-                          {sub.designation}{" "}
-                          <span className="sub-dates">
-                            · {sub.startDate} — {sub.endDate}
-                          </span>
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-            </div>
-            <b>{String(index + 1).padStart(2, "0")}</b>
+    <div className={cn("space-y-4")}>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <div className="rounded-full border border-neutral-700/50 p-1">
+            <Image
+              src={experience.companyImageUrl}
+              alt={`${experience.companyName} logo`}
+              width={36}
+              height={36}
+              className="size-9 rounded-full"
+              unoptimized
+            />
           </div>
-        ))}
+          <div className="flex flex-col gap-1">
+            {experience.companyLink ? (
+              <Link
+                href={experience.companyLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn(
+                  buttonVariants({ variant: "ghost" }),
+                  "h-auto gap-1.5 self-start p-0 text-base font-semibold text-neutral-100 transition-colors duration-200 hover:bg-transparent hover:text-white hover:underline active:bg-transparent"
+                )}
+              >
+                {experience.companyName}
+                <ExternalLink className="size-4" />
+              </Link>
+            ) : (
+              <span className="text-base font-semibold text-neutral-100">
+                {experience.companyName}
+              </span>
+            )}
+            <p className="text-sm text-neutral-400">{experience.designation}</p>
+            {experience.subLabel && (
+              <p className="text-xs text-neutral-500">{experience.subLabel}</p>
+            )}
+          </div>
+        </div>
+        <p className="mt-1 text-sm text-neutral-400 sm:mt-0 sm:shrink-0">
+          {experience.startDate} - {experience.endDate}
+        </p>
       </div>
-    </section>
+
+      {/* Render sub-experiences */}
+      {experience.subExperiences && experience.subExperiences.length > 0 && (
+        <div className="space-y-4 border-l-2 border-neutral-700/50 pl-6 ml-6">
+          {experience.subExperiences.map((subExp) => (
+            <ExperienceItem key={subExp.companyName} experience={subExp} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export async function Experience() {
+  return (
+    <SectionShell id="experience" className="pt-20">
+      <h2 className="mb-8 bg-gradient-to-r from-neutral-300 to-neutral-700 bg-clip-text text-xl font-bold text-transparent lg:text-2xl">
+        Work experience
+      </h2>
+      <ul className="flex flex-col gap-6">
+        {EXPERIENCES.map((experience) => (
+          <li
+            key={experience.companyName}
+            className="rounded-lg bg-gradient-to-br from-neutral-500/50 to-neutral-950 to-90% p-px"
+          >
+            <MagicCard
+              wrapperClassName="rounded-lg px-4 pb-4 pt-3 bg-gradient-to-br from-neutral-900 to-neutral-950 to-90%"
+              className="flex flex-col gap-4 rounded-lg"
+            >
+              <ExperienceItem experience={experience} />
+            </MagicCard>
+          </li>
+        ))}
+      </ul>
+    </SectionShell>
   );
 }
